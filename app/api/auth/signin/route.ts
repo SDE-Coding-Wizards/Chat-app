@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-
+import { getClient } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { getJwtSecretKey } from "@/lib/auth/constants";
 import jwt from "jsonwebtoken";
+import { User } from "@/types/user";
 
 const schema = z.object({
-  username: z.string(),
-  password: z.string(),
+  email: z.string({ message: "Invalid email." }),
+  password: z.string({ message: "Invalid password." }),
 });
 
 export async function POST(req: Request, res: NextResponse) {
@@ -16,31 +17,48 @@ export async function POST(req: Request, res: NextResponse) {
 
   const result = schema.safeParse(json);
   if (result.success === false) {
-    throw new Error(JSON.stringify(result.error));
+    const error = result.error.errors[0].message;
+    console.log("🚀 ~ POST ~ error:", error);
+    return new Response("Invalid request body: " + error, {
+      status: 400,
+    });
   }
-  const { username, password } = result.data;
+  const { email, password } = result.data;
 
-  //check if user exists
-  const user = {
-    username: "kenn7575",
-    password: "$2b$10$prT.thvmhdMNV5GfOKwEUuluAz3sNapgjpoV30rjSzsOfsjWcooym",
-  };
+  //find user in database
+  let users: User[] | null = null;
+  try {
+    const connection = await getClient();
+    const [rows] = (await connection.execute(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    )) as unknown as any[];
+    if (!rows || rows.length < 1) {
+      return new Response("Invalid credentials", { status: 400 });
+    }
+    users = rows as User[];
+  } catch (error) {
+    console.error("error", error);
+    return new Response(
+      "An error occurred while checking if the user exists.",
+      { status: 500 }
+    );
+  }
+
+  const user = users[0];
 
   //compare password
-  const matches = await bcrypt.compare(
-    "password",
-    "$2b$10$luIv/XGeradiXy5hw9zYguMfwAyWjVn31ELguM5xSn6bWBlrotltK"
-  );
+  const matches = await bcrypt.compare(password, user.password);
   console.log("🚀 ~ POST ~ matches:", matches);
   if (!matches) {
-    console.log("passwords do not match");
+    return new Response("Invalid credentials.", { status: 400 });
   }
 
   //set user token in cookies
   const SECRETKEY = getJwtSecretKey();
   const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
 
-  cookies().set("user", JSON.stringify(user), {
+  cookies().set("token", token, {
     path: "/",
     httpOnly: true,
     secure: true,
