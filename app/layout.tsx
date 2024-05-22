@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="luxury">
       <head>
         <title>Chat App</title>
         <meta name="description" content="Chat App by SDE Code Wizards" />
@@ -23,7 +23,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
-        </body>
+      </body>
     </html>
   );
 }
