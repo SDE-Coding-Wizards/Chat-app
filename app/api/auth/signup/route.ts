@@ -67,7 +67,12 @@ export async function POST(req: Request, res: NextResponse) {
   await connection.execute(
     "INSERT INTO users (email, password, status_id) VALUES (?, ?, ?)",
     [user.email, user.password, user.status_id]
-  );
+  )
+
+  // get newly created user
+  const [[newUser]] = (await connection.execute(
+    "SELECT * FROM users ORDER BY created_at DESC LIMIT 1"
+  )) as unknown as any[][];
 
   //set user token in cookies
   const SECRETKEY = getJwtSecretKey();
@@ -81,5 +86,5 @@ export async function POST(req: Request, res: NextResponse) {
 
   //send email verification link
 
-  return new Response(null, { status: 200 });
+  return Response.json(newUser, { status: 200 });
 }
