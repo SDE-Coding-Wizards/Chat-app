@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "14.2.3",
+    "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
     "socket.io": "^4.7.5",
@@ -19,6 +20,8 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "axios": "^1.7.2",
+    "daisyui": "^4.11.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
