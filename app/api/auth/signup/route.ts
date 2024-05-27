@@ -13,6 +13,8 @@ const schema = z.object({
     .string({ message: "Invalid password." })
     .min(8, { message: "Password must be at least 8 characters long." }),
   publicKey: z.string({ message: "Invalid public key." }),
+  //! DONT DO THIS NORMALLY
+  privateKey: z.string({ message: "Invalid private key." }),
 });
 
 export async function POST(req: Request, res: NextResponse) {
@@ -28,7 +30,7 @@ export async function POST(req: Request, res: NextResponse) {
       status: 400,
     });
   }
-  const { email, password, publicKey } = result.data;
+  const { email, password, publicKey, privateKey } = result.data;
 
   //check if user exists
   const connection = await getClient();
@@ -62,21 +64,23 @@ export async function POST(req: Request, res: NextResponse) {
     password: passwordHash,
     status_id: 2,
     public_key: publicKey,
+    private_key: privateKey,
   } as User;
 
   //save user in database
   const [newUser] = await connection.execute(
-    "INSERT INTO users (uuid, email, password, status_id, public_key) VALUES (uuid(), ?, ?, ?, ?) RETURNING *",
-    [user.email, user.password, user.status_id, user.public_key]
+    "INSERT INTO users (uuid, email, password, status_id, public_key, private_key) VALUES (uuid(), ?, ?, ?, ?, ?) RETURNING *",
+    [
+      user.email,
+      user.password,
+      user.status_id,
+      user.public_key,
+      user.private_key,
+    ]
   );
 
-  // get newly created user
-  // const [newUser]: User[] = await connection.query(
-  //   "SELECT * FROM users ORDER BY created_at DESC LIMIT 1"
-  // );
-
   //set user token in cookies
-  const SECRETKEY = process.env.JWT_SECRET_KEY as unknown as KeyLike;
+  const SECRETKEY = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
   const payload: JWTPayload = {
     uuid: user.uuid,
     email: user.email,
