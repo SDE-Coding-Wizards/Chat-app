@@ -36,7 +36,7 @@ export default function Client({
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
 
-  const chatKey = useChatKey(encryptedChatKey);
+  const chatKey = useChatKey(encryptedChatKey, user);
 
   const [LoadingMessages, setLoadingMessages] = useState<number>(0);
 

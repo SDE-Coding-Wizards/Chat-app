@@ -1,6 +1,6 @@
 import { getClient } from "@/lib/server/database";
 import { User } from "@/types";
-import { KeyLike, jwtVerify } from "jose";
+import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 export async function getUser(): Promise<User | null> {
@@ -12,10 +12,6 @@ export async function getUser(): Promise<User | null> {
   const secret = new TextEncoder().encode(SECRETKEY || "secret");
 
   if (!token) return null;
-
-  if (!secret) {
-    throw new Error("No secret found");
-  }
 
   let decodedToken: User | any | null = null;
 
@@ -32,7 +28,6 @@ export async function getUser(): Promise<User | null> {
   const [user] = await conn.query("SELECT * FROM users WHERE email = ?", [
     decodedToken?.payload?.email,
   ]);
-  console.log("🚀 ~ getUser ~ user:", user);
 
   return user;
 }
