@@ -26,17 +26,20 @@ export async function POST(req: Request, res: NextResponse) {
   const { email, password } = result.data;
 
   //find user in database
-  let users: User[] | null = null;
+  let user: User | null = null;
+
   try {
     const connection = await getClient();
-    const [rows] = (await connection.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    )) as unknown as any[];
-    if (!rows || rows.length < 1) {
+
+    [user] = await connection.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (!user) {
       return new Response("Invalid credentials", { status: 400 });
     }
-    users = rows as User[];
+
+    await connection.end();
   } catch (error) {
     console.error("error", error);
     return new Response(
@@ -44,8 +47,6 @@ export async function POST(req: Request, res: NextResponse) {
       { status: 500 }
     );
   }
-
-  const user = users[0];
 
   //compare password
   const matches = await bcrypt.compare(password, user.password);

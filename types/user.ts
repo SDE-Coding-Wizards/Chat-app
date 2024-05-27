@@ -1,5 +1,5 @@
 export interface User {
-  uuid?: number;
+  uuid: string;
   email: string;
   password: string;
   firstname?: string;
@@ -7,4 +7,5 @@ export interface User {
   status_id: number;
   image_path?: string;
   bio?: string;
+  public_key: string
 }

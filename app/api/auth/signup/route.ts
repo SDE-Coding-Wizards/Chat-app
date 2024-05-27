@@ -13,6 +13,7 @@ const schema = z.object({
   password: z
     .string({ message: "Invalid password." })
     .min(8, { message: "Password must be at least 8 characters long." }),
+  publicKey: z.string({ message: "Invalid public key." }),
 });
 
 export async function POST(req: Request, res: NextResponse) {
@@ -28,13 +29,13 @@ export async function POST(req: Request, res: NextResponse) {
       status: 400,
     });
   }
-  const { email, password } = result.data;
+  const { email, password, publicKey } = result.data;
 
   //check if user exists
   const connection = await getClient();
 
   try {
-    const [rows] = (await connection.execute(
+    const rows = (await connection.execute(
       "SELECT * FROM users WHERE email = ?",
       [email]
     )) as unknown as any[];
@@ -57,22 +58,23 @@ export async function POST(req: Request, res: NextResponse) {
   console.log("🚀 ~ POST ~ passwordHash:", passwordHash);
 
   //make user
-  const user: User = {
+  const user = {
     email: email,
     password: passwordHash,
     status_id: 2,
-  };
+    public_key: publicKey,
+  } as User;
 
   //save user in database
-  await connection.execute(
-    "INSERT INTO users (email, password, status_id) VALUES (?, ?, ?)",
-    [user.email, user.password, user.status_id]
-  )
+  const [newUser] = await connection.execute(
+    "INSERT INTO users (uuid, email, password, status_id, public_key) VALUES (uuid(), ?, ?, ?, ?) RETURNING *",
+    [user.email, user.password, user.status_id, user.public_key]
+  );
 
   // get newly created user
-  const [[newUser]] = (await connection.execute(
-    "SELECT * FROM users ORDER BY created_at DESC LIMIT 1"
-  )) as unknown as any[][];
+  // const [newUser]: User[] = await connection.query(
+  //   "SELECT * FROM users ORDER BY created_at DESC LIMIT 1"
+  // );
 
   //set user token in cookies
   const SECRETKEY = getJwtSecretKey();
