@@ -8,7 +8,9 @@ import { User } from "@/types/user";
 import { JWTPayload, KeyLike, SignJWT } from "jose";
 
 const schema = z.object({
-  email: z.string({ message: "Invalid email." }),
+  email: z
+    .string({ message: "Invalid email." })
+    .email({ message: "Invalid email." }),
   password: z
     .string({ message: "Invalid password." })
     .min(8, { message: "Password must be at least 8 characters long." }),

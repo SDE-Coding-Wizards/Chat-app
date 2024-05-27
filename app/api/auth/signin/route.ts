@@ -7,7 +7,9 @@ import { JWTPayload, KeyLike, SignJWT } from "jose";
 import { User } from "@/types/user";
 
 const schema = z.object({
-  email: z.string({ message: "Invalid email." }),
+  email: z
+    .string({ message: "Invalid email." })
+    .email({ message: "Invalid email." }),
   password: z.string({ message: "Invalid password." }),
 });
 
