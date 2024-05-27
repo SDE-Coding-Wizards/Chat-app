@@ -7,8 +7,9 @@ export async function getUser(): Promise<User | null> {
   "use server";
 
   const token = cookies().get("token")?.value;
-  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
-  const secret = new TextEncoder().encode(JWT_SECRET_KEY);
+  const SECRETKEY = process.env.JWT_SECRET_KEY as string;
+
+  const secret = new TextEncoder().encode(SECRETKEY || "secret");
 
   if (!token) return null;
 

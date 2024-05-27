@@ -6,11 +6,14 @@ import Userlist from "./Userlist";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
 
+
+
+
 export default async function ChatPage() {
   const user = await getUser();
 
   if (!user) return notFound();
-  
+
   const chatrooms = await getChatrooms(user.uuid);
   const users = await getUsers();
 

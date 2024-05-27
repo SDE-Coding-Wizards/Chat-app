@@ -57,9 +57,9 @@ export async function POST(req: Request, res: NextResponse) {
   }
 
   //set user token in cookies
-  const SECRETKEY = process.env.JWT_SECRET_KEY as string;
+  const SECRETKEY = process.env.JWT_SECRET_KEY as string
 
-  const secret = new TextEncoder().encode(SECRETKEY);
+  const secret = new TextEncoder().encode(SECRETKEY || "secret");
   const payload: JWTPayload = {
     uuid: user.uuid,
     email: user.email,
