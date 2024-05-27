@@ -16,7 +16,7 @@ export default function SignUp() {
 
     const key = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
 
-    if (!key) throw new Error("No key found");
+    // if (!key) throw new Error("No key found");
 
     // const { content, iv } = encryptMessage(privateKey, key);
 
