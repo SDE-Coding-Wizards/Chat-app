@@ -28,24 +28,7 @@ export async function middleware(request: NextRequest & { user?: User }) {
 
     // If token is valid, you can set user info in headers or modify request
     const user = decodedUser as User;
-
-    //Get user from database
-    const connection = await getClient();
-    try {
-      const [rows] = (await connection.execute(
-        "SELECT * FROM users WHERE uuid = ?",
-        [user.uuid]
-      )) as unknown as any[];
-      if (!rows || rows.length < 1) {
-        return new NextResponse("This user does not exist.", { status: 400 });
-      }
-      request.user = rows[0] as User;
-    } catch (error) {
-      return new NextResponse(
-        "An error occurred while checking if the user exists.",
-        { status: 500 }
-      );
-    }
+    request.user = user;
 
     // Continue to the next middleware or route handler
     return NextResponse.next();
