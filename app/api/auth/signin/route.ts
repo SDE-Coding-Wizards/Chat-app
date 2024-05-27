@@ -75,5 +75,5 @@ export async function POST(req: Request, res: NextResponse) {
 
   //send email verification link
 
-  return new Response(null, { status: 200 });
+  return Response.json(user);
 }
