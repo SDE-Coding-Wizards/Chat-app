@@ -4,15 +4,17 @@ import { getClient } from "@/lib/server/database";
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getJwtSecretKey } from "@/lib/auth/constants";
-import jwt from "jsonwebtoken";
 import { User } from "@/types/user";
+import { JWTPayload, KeyLike, SignJWT } from "jose";
 
 const schema = z.object({
   email: z.string({ message: "Invalid email." }),
   password: z
     .string({ message: "Invalid password." })
     .min(8, { message: "Password must be at least 8 characters long." }),
+  publicKey: z.string({ message: "Invalid public key." }),
+  //! DONT DO THIS NORMALLY
+  privateKey: z.string({ message: "Invalid private key." }),
 });
 
 export async function POST(req: Request, res: NextResponse) {
@@ -28,19 +30,19 @@ export async function POST(req: Request, res: NextResponse) {
       status: 400,
     });
   }
-  const { email, password } = result.data;
+  const { email, password, publicKey, privateKey } = result.data;
 
   //check if user exists
   const connection = await getClient();
 
   try {
-    const [rows] = (await connection.execute(
+    const rows = (await connection.execute(
       "SELECT * FROM users WHERE email = ?",
       [email]
     )) as unknown as any[];
     console.log("🚀 ~ POST ~ users:", rows);
     if (rows && rows.length > 0) {
-      return new Response("User already exists!", { status: 400 });
+      return new Response("User already exists!", { status: 409 });
     }
   } catch (error) {
     return new Response(
@@ -57,21 +59,36 @@ export async function POST(req: Request, res: NextResponse) {
   console.log("🚀 ~ POST ~ passwordHash:", passwordHash);
 
   //make user
-  const user: User = {
+  const user = {
     email: email,
     password: passwordHash,
     status_id: 2,
-  };
+    public_key: publicKey,
+    private_key: privateKey,
+  } as User;
 
   //save user in database
-  await connection.execute(
-    "INSERT INTO users (email, password, status_id) VALUES (?, ?, ?)",
-    [user.email, user.password, user.status_id]
+  const [newUser] = await connection.execute(
+    "INSERT INTO users (uuid, email, password, status_id, public_key, private_key) VALUES (uuid(), ?, ?, ?, ?, ?) RETURNING *",
+    [
+      user.email,
+      user.password,
+      user.status_id,
+      user.public_key,
+      user.private_key,
+    ]
   );
 
   //set user token in cookies
-  const SECRETKEY = getJwtSecretKey();
-  const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
+  const SECRETKEY = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
+  const payload: JWTPayload = {
+    uuid: user.uuid,
+    email: user.email,
+  };
+  const token = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("24h")
+    .sign(SECRETKEY);
   cookies().set("token", token, {
     path: "/",
     httpOnly: true,
@@ -81,5 +98,5 @@ export async function POST(req: Request, res: NextResponse) {
 
   //send email verification link
 
-  return new Response(null, { status: 200 });
+  return Response.json(newUser, { status: 200 });
 }

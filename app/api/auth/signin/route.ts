@@ -3,8 +3,7 @@ import { cookies } from "next/headers";
 import { getClient } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getJwtSecretKey } from "@/lib/auth/constants";
-import jwt from "jsonwebtoken";
+import { JWTPayload, KeyLike, SignJWT } from "jose";
 import { User } from "@/types/user";
 
 const schema = z.object({
@@ -26,17 +25,20 @@ export async function POST(req: Request, res: NextResponse) {
   const { email, password } = result.data;
 
   //find user in database
-  let users: User[] | null = null;
+  let user: User | null = null;
+
   try {
     const connection = await getClient();
-    const [rows] = (await connection.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    )) as unknown as any[];
-    if (!rows || rows.length < 1) {
+
+    [user] = await connection.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    if (!user) {
       return new Response("Invalid credentials", { status: 400 });
     }
-    users = rows as User[];
+
+    await connection.end();
   } catch (error) {
     console.error("error", error);
     return new Response(
@@ -44,8 +46,6 @@ export async function POST(req: Request, res: NextResponse) {
       { status: 500 }
     );
   }
-
-  const user = users[0];
 
   //compare password
   const matches = await bcrypt.compare(password, user.password);
@@ -55,8 +55,16 @@ export async function POST(req: Request, res: NextResponse) {
   }
 
   //set user token in cookies
-  const SECRETKEY = getJwtSecretKey();
-  const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
+  const SECRETKEY = process.env.JWT_SECRET_KEY as unknown as KeyLike;
+  const payload: JWTPayload = {
+    uuid: user.uuid,
+    email: user.email,
+  };
+
+  const token = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("24h")
+    .sign(SECRETKEY);
 
   cookies().set("token", token, {
     path: "/",
@@ -67,5 +75,5 @@ export async function POST(req: Request, res: NextResponse) {
 
   //send email verification link
 
-  return new Response(null, { status: 200 });
+  return Response.json(user);
 }
