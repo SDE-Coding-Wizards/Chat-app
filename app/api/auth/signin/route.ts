@@ -3,8 +3,7 @@ import { cookies } from "next/headers";
 import { getClient } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getJwtSecretKey } from "@/lib/auth/constants";
-import { JWTPayload, SignJWT } from "jose";
+import { JWTPayload, KeyLike, SignJWT } from "jose";
 import { User } from "@/types/user";
 
 const schema = z.object({
@@ -56,7 +55,7 @@ export async function POST(req: Request, res: NextResponse) {
   }
 
   //set user token in cookies
-  const SECRETKEY = getJwtSecretKey();
+  const SECRETKEY = process.env.JWT_SECRET_KEY as unknown as KeyLike;
   const payload: JWTPayload = {
     uuid: user.uuid,
     email: user.email,

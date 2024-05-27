@@ -4,9 +4,8 @@ import { getClient } from "@/lib/server/database";
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getJwtSecretKey } from "@/lib/auth/constants";
 import { User } from "@/types/user";
-import { JWTPayload, SignJWT } from "jose";
+import { JWTPayload, KeyLike, SignJWT } from "jose";
 
 const schema = z.object({
   email: z.string({ message: "Invalid email." }),
@@ -77,7 +76,7 @@ export async function POST(req: Request, res: NextResponse) {
   // );
 
   //set user token in cookies
-  const SECRETKEY = getJwtSecretKey();
+  const SECRETKEY = process.env.JWT_SECRET_KEY as unknown as KeyLike;
   const payload: JWTPayload = {
     uuid: user.uuid,
     email: user.email,
