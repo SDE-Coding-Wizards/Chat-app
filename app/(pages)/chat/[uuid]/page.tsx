@@ -44,10 +44,15 @@ export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
     [user_uuid]
   );
 
-  const chatroomMembers = await conn.query(
-    "SELECT * FROM chatroom_members WHERE chatroom_uuid IN (?)",
-    [chatrooms.map(({ uuid }) => uuid)]
-  );
+  const chatroomUUIDs = chatrooms.map(({ uuid }) => uuid);
+  let chatroomMembers: ChatroomMember[] = [];
+
+  if (chatroomUUIDs.length > 0) {
+    chatroomMembers = await conn.query(
+      "SELECT * FROM chatroom_members WHERE chatroom_uuid IN (?)",
+      [chatrooms.map(({ uuid }) => uuid)]
+    );
+  }
 
   const users = await conn.query("SELECT * FROM users");
 

@@ -80,7 +80,8 @@ export async function POST(req: Request, res: NextResponse) {
   );
 
   //set user token in cookies
-  const SECRETKEY = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
+  const SECRETKEY = process.env.JWT_SECRET_KEY as string;
+  const secret = new TextEncoder().encode(SECRETKEY);
   const payload: JWTPayload = {
     uuid: user.uuid,
     email: user.email,
@@ -88,7 +89,7 @@ export async function POST(req: Request, res: NextResponse) {
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("24h")
-    .sign(SECRETKEY);
+    .sign(secret);
   cookies().set("token", token, {
     path: "/",
     httpOnly: true,

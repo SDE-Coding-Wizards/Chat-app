@@ -14,8 +14,9 @@ const io = new Server(httpServer, {
 
 io.on('connection', async (socket) => {
     console.log(socket.id);
-}
 
-httpServer.listen(3000, () => {
-    console.log('Server listening on port :3000')
-});
+  });
+  
+  httpServer.listen(5000, () => {
+    console.log('Server listening on port 5000');
+  });
