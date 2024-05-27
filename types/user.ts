@@ -6,6 +6,9 @@ export interface User extends CreateUser {
   image_path?: string;
   bio?: string;
   public_key: string;
+
+  //! DONT DO THIS NORMALLY
+  private_key?: string;
 }
 export interface CreateUser {
   email: string;
