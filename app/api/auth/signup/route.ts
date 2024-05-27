@@ -5,8 +5,8 @@ import { getClient } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { getJwtSecretKey } from "@/lib/auth/constants";
-import jwt from "jsonwebtoken";
 import { User } from "@/types/user";
+import { JWTPayload, SignJWT } from "jose";
 
 const schema = z.object({
   email: z.string({ message: "Invalid email." }),
@@ -41,7 +41,7 @@ export async function POST(req: Request, res: NextResponse) {
     )) as unknown as any[];
     console.log("🚀 ~ POST ~ users:", rows);
     if (rows && rows.length > 0) {
-      return new Response("User already exists!", { status: 400 });
+      return new Response("User already exists!", { status: 409 });
     }
   } catch (error) {
     return new Response(
@@ -78,7 +78,14 @@ export async function POST(req: Request, res: NextResponse) {
 
   //set user token in cookies
   const SECRETKEY = getJwtSecretKey();
-  const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
+  const payload: JWTPayload = {
+    uuid: user.uuid,
+    email: user.email,
+  };
+  const token = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("24h")
+    .sign(SECRETKEY);
   cookies().set("token", token, {
     path: "/",
     httpOnly: true,
