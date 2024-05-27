@@ -3,28 +3,28 @@ import Link from "next/link";
 export default function Chat() {
   return (
     <main className="flex flex-col min-h-screen bg-base-100">
-      <nav className="bg-base-200 w-full p-4 flex justify-around items-center shadow-lg">
+      <nav className="bg-base-200 w-full p-4 flex justify-around items-center shadow-lg border-b border-base-300">
         <a
-          href="#"
-          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+          href="/friends/online"
+          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 border border-base-400"
         >
           Online
         </a>
         <a
-          href="#"
-          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+          href="/friends/all"
+          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 border border-base-400"
         >
           All
         </a>
         <a
-          href="#"
-          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+          href="/friends/pending"
+          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 border border-base-400"
         >
           Pending
         </a>
         <a
-          href="#"
-          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+          href="/friends/addfriend"
+          className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 border border-base-400"
         >
           Add Friend
         </a>
