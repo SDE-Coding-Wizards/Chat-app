@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
 import { Message, Chatroom, User } from "@/types";
-import ChatList from "@/components/Chatlist";
-import MessagesEnd from "@/components/MessagesEnd";
+import { Chatlist, MessagesEnd } from "@/components";
+import { v4 as uuidv4 } from "uuid";
+import { io } from "socket.io-client";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
   user: User;
   sendMessage: (
+    uuid: string,
     message: Message,
     chatroom_uuid: Chatroom["uuid"],
     author_uuid: User["uuid"]
@@ -23,6 +25,8 @@ interface ClientProps {
 interface MessageWithLoading extends Message {
   isLoading?: boolean;
 }
+
+const socket = io("http://localhost:5000/chat");
 
 export default function Client({
   chatroom_uuid,
@@ -38,8 +42,6 @@ export default function Client({
 
   const chatKey = useChatKey(encryptedChatKey, user);
 
-  const [LoadingMessages, setLoadingMessages] = useState<number>(0);
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const formData = new FormData(e.currentTarget);
     const content = formData.get("message_content") as string;
@@ -49,13 +51,12 @@ export default function Client({
 
     if (!content.trim()) return;
 
-    const loadingId = LoadingMessages.toString();
-    setLoadingMessages(LoadingMessages + 1);
+    const uuid = uuidv4();
 
     setMessages([
       ...messages,
       {
-        uuid: loadingId.toString(),
+        uuid,
         content: { content },
         isLoading: true,
       } as MessageWithLoading,
@@ -64,26 +65,41 @@ export default function Client({
     const encryptedMessage = encryptMessage(content, chatKey) as Message;
 
     const newMessage = await sendMessage(
+      uuid,
       encryptedMessage,
       chatroom_uuid,
       user.uuid
     );
 
-    setMessages((prev) => {
-      const oldMessage = prev.find(({ uuid }) => uuid == loadingId);
-
-      if (!oldMessage) return prev;
-
-      const index = prev.indexOf(oldMessage);
-      prev[index] = newMessage;
-
-      return [...prev];
-    });
+    socket.emit("send-message", newMessage);
   }
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on("connect", () => {
+      socket.emit("join-chatroom", chatroom_uuid);
+    });
+
+    socket.on("receive-message", (message: Message) => {
+      setMessages((prev) => {
+        let newList = [...prev];
+
+        newList = newList.filter(({ uuid }) => uuid != message.uuid);
+        newList.push(message);
+
+        return newList;
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <div className="flex bg-base-100 h-full">
-      <ChatList
+      <Chatlist
         chatrooms={chatrooms}
         user={user}
         updateChatrooms={setChatrooms}

@@ -124,6 +124,7 @@ function wait(ms: number) {
 }
 
 async function sendMessage(
+  uuid: string,
   message: Message,
   chatroom_uuid: string,
   author_uuid: string
@@ -144,8 +145,8 @@ async function sendMessage(
       );
 
       const [newMessage] = await conn.execute(
-        "INSERT INTO messages (uuid, chatroom_uuid, content_uuid, author_uuid, iv) VALUES (UUID(), ?, ?, ?, ?) RETURNING *",
-        [chatroom_uuid, newContent.uuid, author_uuid, message.iv]
+        "INSERT INTO messages (uuid, chatroom_uuid, content_uuid, author_uuid, iv) VALUES (?, ?, ?, ?, ?) RETURNING *",
+        [uuid, chatroom_uuid, newContent.uuid, author_uuid, message.iv]
       );
 
       await conn.commit();
