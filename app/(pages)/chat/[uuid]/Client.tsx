@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
 import { Message, Chatroom, User } from "@/types";
-import ChatList from "./Chatlist";
-import MessagesEnd from "./MessagesEnd";
+import ChatList from "@/components/Chatlist";
+import MessagesEnd from "@/components/MessagesEnd";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
@@ -109,7 +109,7 @@ export default function Client({
             <div>Loading...</div>
           )}
 
-          <MessagesEnd messages={messages} />
+          <MessagesEnd />
         </div>
 
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>

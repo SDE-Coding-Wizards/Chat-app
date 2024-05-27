@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import Chatlist from "./[uuid]/Chatlist";
+import Chatlist from "../../../components/Chatlist";
 import { getChatrooms } from "./[uuid]/page";
 import { getClient } from "@/lib/server/database";
 import Userlist from "./Userlist";

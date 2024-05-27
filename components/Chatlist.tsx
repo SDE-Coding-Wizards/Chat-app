@@ -35,7 +35,7 @@ export default function Chatlist({
             prefetch
           >
             {chatroom?.name ||
-              chatroom.users?.map(({ firstname }) => firstname).join(", ")}
+              chatroom.users?.map(({ firstname, email }) => firstname || email).join(", ")}
           </Link>
         ))}
       </div>
