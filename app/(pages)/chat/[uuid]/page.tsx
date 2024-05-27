@@ -77,7 +77,7 @@ async function getEncryptedChatKey(
 ): Promise<string> {
   const conn = await getClient();
 
-  let [{ chat_key }] = await conn.query(
+  let [{ chat_key = "" } = {}] = await conn.query(
     "SELECT chat_key FROM chatroom_members WHERE chatroom_uuid = ? AND user_uuid = ?",
     [chatroom_uuid, user_uuid]
   );

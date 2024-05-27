@@ -29,7 +29,7 @@ export default function SignUp() {
     localStorage.setItem("privateKey", privateKey);
   }
   return (
-    <main className="flex items-center justify-center min-h-screen bg-base-100">
+    <main className="flex items-center justify-center bg-base-100">
       <div className="flex flex-col space-y-4">
         <label className="input input-bordered flex items-center gap-2">
           <svg

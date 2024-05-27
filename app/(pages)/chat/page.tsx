@@ -16,7 +16,6 @@ export default async function ChatPage() {
 
   return (
     <div>
-      <h1>Chat Page</h1>
       <Chatlist user={user} chatrooms={chatrooms} />
       <Userlist user={user} users={users} />
     </div>
