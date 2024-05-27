@@ -1,10 +1,13 @@
-export interface User {
-  uuid?: number;
-  email: string;
-  password: string;
+import { UUID } from "./uuid";
+export interface User extends CreateUser {
+  uuid: UUID;
   firstname?: string;
   lastname?: string;
-  status_id: number;
   image_path?: string;
   bio?: string;
+}
+export interface CreateUser {
+  email: string;
+  password: string;
+  status_id: number;
 }
