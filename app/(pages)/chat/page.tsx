@@ -5,10 +5,9 @@ import { getClient } from "@/lib/server/database";
 import Userlist from "./Userlist";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
-"use client";
 
-import { useState } from "react";
-import Link from "next/link";
+
+
 
 export default async function ChatPage() {
   const user = await getUser();
