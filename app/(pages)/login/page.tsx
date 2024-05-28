@@ -23,7 +23,10 @@ export default function login() {
   }
   return (
     <main className="flex items-center justify-center bg-base-100">
-      <form>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleLogin();
+      }}>
         <div className="flex flex-col space-y-4">
           <label className="input input-bordered flex items-center gap-2">
             <svg
@@ -95,7 +98,7 @@ export default function login() {
           </button>
           <button
             className="px-4 py-2 btn btn-neutral text-xl font-bold rounded-lg"
-            onClick={handleLogin}
+            type="submit"
           >
             Sign In
           </button>
