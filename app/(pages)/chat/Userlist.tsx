@@ -1,15 +1,17 @@
 "use client";
 
+import { Chatroom } from "@/types";
 import { User } from "@/types/user";
-import { createChat } from "@/utils/createChat";
 import { useRouter } from "next/navigation";
+import { createChatParams } from "@/utils/createChat";
 
 interface UserlistProps {
   user: User;
   users: User[];
+  createChat: createChatParams
 }
 
-export default function Userlist({ user, users }: UserlistProps) {
+export default function Userlist({ user, users, createChat }: UserlistProps) {
   const router = useRouter();
 
   return (

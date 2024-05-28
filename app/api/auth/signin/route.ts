@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { JWTPayload, KeyLike, SignJWT } from "jose";
@@ -30,7 +31,7 @@ export async function POST(req: Request, res: NextResponse) {
   let user: User | null = null;
 
   try {
-    const connection = await getClient();
+    const connection = await getPool();
 
     [user] = await connection.query("SELECT * FROM users WHERE email = ?", [
       email,

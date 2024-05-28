@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getJwtSecretKey } from "@/lib/auth/constants";
 import jwt from "jsonwebtoken";
 import { User } from "@/types/user";
 
@@ -30,7 +30,7 @@ export async function POST(req: Request, res: NextResponse) {
   //find user in database
   let users: User[] | null = null;
   try {
-    const connection = await getClient();
+    const connection = await getPool();
     const [rows] = (await connection.execute(
       "SELECT * FROM users WHERE uuid = ?",
       [userId]
@@ -55,7 +55,7 @@ export async function POST(req: Request, res: NextResponse) {
 
   //update password in database
   try {
-    const connection = await getClient();
+    const connection = await getPool();
     const [rows] = await connection.execute(
       "UPDATE users SET password = ? WHERE uuid = ?",
       [passwordHash, userId]
@@ -69,7 +69,7 @@ export async function POST(req: Request, res: NextResponse) {
   }
 
   //set user token in cookies
-  const SECRETKEY = getJwtSecretKey();
+  const SECRETKEY = process.env.SECRETKEY!;
   const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
 
   cookies().set("token", token, {

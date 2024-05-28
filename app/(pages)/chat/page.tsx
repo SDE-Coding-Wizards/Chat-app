@@ -1,10 +1,12 @@
 import { User } from "@/types/user";
 import Chatlist from "../../../components/Chatlist";
 import { getChatrooms } from "./[uuid]/page";
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import Userlist from "./Userlist";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
+import { createChat } from "@/utils/createChat";
 
 export default async function ChatPage() {
   const user = await getUser();
@@ -16,14 +18,14 @@ export default async function ChatPage() {
 
   return (
     <div>
-      <Chatlist user={user} chatrooms={chatrooms} />
-      <Userlist user={user} users={users} />
+      <Chatlist chatrooms={chatrooms} />
+      <Userlist user={user} users={users} createChat={createChat} />
     </div>
   );
 }
 
 async function getUsers(): Promise<User[]> {
-  const conn = await getClient();
+  const conn = await getPool();
 
   const users = await conn.query("SELECT * FROM users");
 

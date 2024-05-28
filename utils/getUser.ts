@@ -1,4 +1,5 @@
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import { User } from "@/types";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
@@ -23,7 +24,7 @@ export async function getUser(): Promise<User | null> {
     return null;
   }
 
-  const conn = await getClient();
+  const conn = await getPool();
 
   const [user] = await conn.query("SELECT * FROM users WHERE email = ?", [
     decodedToken?.payload?.email,

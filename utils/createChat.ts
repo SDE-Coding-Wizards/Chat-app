@@ -1,46 +1,40 @@
 import { Chatroom, User } from "@/types";
 import axios from "axios";
 import { encryptKey, generateKey } from "./key";
+import { getPool } from "@/lib/server/database";
 
-export async function createChat(
+export type createChatParams = (
   creator: User,
-  members: User[] = [],
+  members: User[],
   name?: string
-): Promise<Chatroom> {
-  const { data }: { data: Chatroom } = await axios.post("/api/chatrooms", {
-    name,
-  });
+) => Promise<Chatroom>;
 
-  const newChat_key = generateKey();
+export const createChat: createChatParams = async (creator, members, name) => {
+  "use server";
+  const conn = await getPool();
 
-  let newChatroom: Chatroom;
+  conn.beginTransaction();
 
-  newChatroom = await addMember(creator.uuid, data.uuid, newChat_key);
-
-  for (let member of members) {
-    newChatroom = await addMember(member.uuid, data.uuid, newChat_key);
-  }
-
-  return newChatroom;
-}
-
-export async function addMember(
-  new_member_uuid: string,
-  chatroom_uuid: string,
-  chat_key: string
-): Promise<Chatroom> {
-  const { data: user } = await axios.get(`/api/users/${new_member_uuid}`);
-
-  const new_chat_key = encryptKey(chat_key, user.public_key);
-
-  const { data: updatedChatroom } = await axios.post(
-    "/api/chatrooms/add-member",
-    {
-      chatroom_uuid,
-      new_member_uuid,
-      new_chat_key,
-    }
+  const [newChatroom]: Chatroom[] = await conn.execute(
+    "INSERT INTO chatrooms (uuid, name) VALUES (uuid(), ?) RETURNING *",
+    [name]
   );
 
-  return updatedChatroom;
-}
+  const chat_key = generateKey();
+
+  const insertList = [creator, ...members].map((member) => [
+    member.uuid,
+    newChatroom.uuid,
+    encryptKey(chat_key, member.public_key),
+  ]);
+
+  await conn.batch(
+    "INSERT INTO chatroom_members (uuid, user_uuid, chatroom_uuid, chat_key) VALUES (uuid(), ?, ?, ?) RETURNING *",
+    insertList
+  );
+
+  await conn.commit();
+  await conn.end();
+
+  return newChatroom;
+};

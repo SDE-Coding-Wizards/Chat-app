@@ -1,5 +1,6 @@
 import Client from "./Client";
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import type { Message, Chatroom, User, ChatroomMember } from "@/types";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
@@ -32,7 +33,7 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
 }
 
 export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
-  const conn = await getClient();
+  const conn = await getPool();
 
   const chatrooms: Chatroom[] = await conn.query(
     `
@@ -75,7 +76,7 @@ async function getEncryptedChatKey(
   chatroom_uuid: string,
   user_uuid: string
 ): Promise<string> {
-  const conn = await getClient();
+  const conn = await getPool();
 
   let [{ chat_key = "" } = {}] = await conn.query(
     "SELECT chat_key FROM chatroom_members WHERE chatroom_uuid = ? AND user_uuid = ?",
@@ -88,7 +89,7 @@ async function getEncryptedChatKey(
 }
 
 async function getMessages(chatroom_uuid: string): Promise<Message[]> {
-  const conn = await getClient();
+  const conn = await getPool();
 
   try {
     const messages = await conn.query(
@@ -131,7 +132,7 @@ async function sendMessage(
 ): Promise<Message> {
   "use server";
 
-  const conn = await getClient();
+  const conn = await getPool();
 
   conn.beginTransaction();
 

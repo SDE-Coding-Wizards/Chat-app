@@ -1,11 +1,12 @@
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import { Chatroom, ChatroomMember, User } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
 
-  const conn = await getClient();
+  const conn = await getPool();
 
   const { chatroom_uuid, new_member_uuid, new_chat_key } = body;
 

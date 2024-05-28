@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -35,7 +36,7 @@ export async function POST(req: Request, res: NextResponse) {
   const { email, password, publicKey, privateKey } = result.data;
 
   //check if user exists
-  const connection = await getClient();
+  const connection = await getPool();
 
   try {
     const rows = (await connection.execute(

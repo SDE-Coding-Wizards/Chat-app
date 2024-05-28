@@ -1,4 +1,5 @@
-import { getClient } from "@/lib/server/database";
+// import { getClient } from "@/lib/server/database";
+import { getPool } from "@/lib/server/database";
 import { NextRequest } from "next/server";
 
 export async function GET(
@@ -7,7 +8,7 @@ export async function GET(
 ) {
   const { uuid } = params;
 
-  const conn = await getClient();
+  const conn = await getPool();
 
   const [user] = await conn.query("SELECT * FROM users WHERE uuid = ?", [
     uuid,

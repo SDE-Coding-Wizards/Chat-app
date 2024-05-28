@@ -1,27 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Chatroom } from "@/types/chatroom";
-import { createChat } from "@/utils/createChat";
-import { User } from "@/types";
+import { Chatroom } from "@/types";
 
 interface ChatlistProps {
   chatrooms: Chatroom[];
-  user: User;
-  updateChatrooms?: (chatrooms: Chatroom[]) => void;
 }
 
-export default function Chatlist({
-  chatrooms,
-  user,
-  updateChatrooms = () => {},
-}: ChatlistProps) {
-  async function newChat() {
-    const newChatroom = await createChat(user);
-
-    updateChatrooms([...chatrooms, newChatroom]);
-  }
-
+export default function Chatlist({ chatrooms }: ChatlistProps) {
   return (
     <aside className="w-1/4 bg-base-200 p-4">
       <h2 className="text-lg font-bold mb-4">Recent Chats</h2>
@@ -35,12 +21,12 @@ export default function Chatlist({
             prefetch
           >
             {chatroom?.name ||
-              chatroom.users?.map(({ firstname, email }) => firstname || email).join(", ")}
+              chatroom.users
+                ?.map(({ firstname, email }) => firstname || email)
+                .join(", ")}
           </Link>
         ))}
       </div>
-
-      <button onClick={newChat}>Create Chat</button>
     </aside>
   );
 }

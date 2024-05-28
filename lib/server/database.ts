@@ -8,9 +8,13 @@ export const getClient = async () => {
   return connection;
 };
 
+let pool: mariadb.Pool | null = null;
+
 //for multiple queries
 export const getPool = async () => {
-  const pool = await mariadb.createPool(DATABASE_URL);
+  if (pool) return pool.getConnection();
 
-  return pool;
+  pool = mariadb.createPool(DATABASE_URL);
+
+  return await pool.getConnection();
 };
