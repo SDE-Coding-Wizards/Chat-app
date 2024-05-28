@@ -13,7 +13,7 @@ const io = new Server(httpServer, {
 const chat = io.of("/chat");
 
 chat.on("connection", async (socket: Socket) => {
-  socket.on("join-chatroom", (chatroom_uuid: string) => {
+  socket.on("join-room", (chatroom_uuid: string) => {
     socket.join(chatroom_uuid);
   });
 

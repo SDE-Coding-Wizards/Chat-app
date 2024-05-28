@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
 import { Message, Chatroom, User } from "@/types";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
-import { io } from "socket.io-client";
+import { useWebsocket } from "@/hooks/useWebsocket";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
@@ -26,8 +26,6 @@ interface MessageWithLoading extends Message {
   isLoading?: boolean;
 }
 
-const socket = io("http://localhost:5000/chat");
-
 export default function Client({
   chatroom_uuid,
   user,
@@ -39,6 +37,10 @@ export default function Client({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
+  const socket = useWebsocket("/chat", {
+    events: { "receive-message": updateList },
+    room: chatroom_uuid,
+  });
 
   const chatKey = useChatKey(encryptedChatKey, user);
 
@@ -74,28 +76,16 @@ export default function Client({
     socket.emit("send-message", newMessage);
   }
 
-  useEffect(() => {
-    socket.connect();
+  function updateList(newMessage: Message) {
+    setMessages((prev) => {
+      let newList = [...prev];
 
-    socket.on("connect", () => {
-      socket.emit("join-chatroom", chatroom_uuid);
+      newList = newList.filter(({ uuid }) => uuid != newMessage.uuid);
+      newList.push(newMessage);
+
+      return newList;
     });
-
-    socket.on("receive-message", (message: Message) => {
-      setMessages((prev) => {
-        let newList = [...prev];
-
-        newList = newList.filter(({ uuid }) => uuid != message.uuid);
-        newList.push(message);
-
-        return newList;
-      });
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  }
 
   return (
     <div className="flex bg-base-100 h-full">
