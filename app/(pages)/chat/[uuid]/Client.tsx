@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
 import { Message, Chatroom, User } from "@/types";
-import ChatList from "./Chatlist";
-import MessagesEnd from "./MessagesEnd";
+import { Chatlist, MessagesEnd } from "@/components";
+import { v4 as uuidv4 } from "uuid";
+import { useWebsocket } from "@/hooks/useWebsocket";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
   user: User;
   sendMessage: (
+    uuid: string,
     message: Message,
     chatroom_uuid: Chatroom["uuid"],
     author_uuid: User["uuid"]
@@ -35,10 +37,12 @@ export default function Client({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
+  const socket = useWebsocket("/chat", {
+    events: { "receive-message": updateList },
+    room: chatroom_uuid,
+  });
 
-  const chatKey = useChatKey(encryptedChatKey);
-
-  const [LoadingMessages, setLoadingMessages] = useState<number>(0);
+  const chatKey = useChatKey(encryptedChatKey, user);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const formData = new FormData(e.currentTarget);
@@ -49,13 +53,12 @@ export default function Client({
 
     if (!content.trim()) return;
 
-    const loadingId = LoadingMessages.toString();
-    setLoadingMessages(LoadingMessages + 1);
+    const uuid = uuidv4();
 
     setMessages([
       ...messages,
       {
-        uuid: loadingId.toString(),
+        uuid,
         content: { content },
         isLoading: true,
       } as MessageWithLoading,
@@ -64,26 +67,29 @@ export default function Client({
     const encryptedMessage = encryptMessage(content, chatKey) as Message;
 
     const newMessage = await sendMessage(
+      uuid,
       encryptedMessage,
       chatroom_uuid,
       user.uuid
     );
 
+    socket.emit("send-message", newMessage);
+  }
+
+  function updateList(newMessage: Message) {
     setMessages((prev) => {
-      const oldMessage = prev.find(({ uuid }) => uuid == loadingId);
+      let newList = [...prev];
 
-      if (!oldMessage) return prev;
+      newList = newList.filter(({ uuid }) => uuid != newMessage.uuid);
+      newList.push(newMessage);
 
-      const index = prev.indexOf(oldMessage);
-      prev[index] = newMessage;
-
-      return [...prev];
+      return newList;
     });
   }
 
   return (
     <div className="flex bg-base-100 h-full">
-      <ChatList
+      <Chatlist
         chatrooms={chatrooms}
         user={user}
         updateChatrooms={setChatrooms}
@@ -109,7 +115,7 @@ export default function Client({
             <div>Loading...</div>
           )}
 
-          <MessagesEnd messages={messages} />
+          <MessagesEnd />
         </div>
 
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>

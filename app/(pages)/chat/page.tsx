@@ -1,13 +1,10 @@
 import { User } from "@/types/user";
-import Chatlist from "./[uuid]/Chatlist";
+import Chatlist from "../../../components/Chatlist";
 import { getChatrooms } from "./[uuid]/page";
 import { getClient } from "@/lib/server/database";
 import Userlist from "./Userlist";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
-
-
-
 
 export default async function ChatPage() {
   const user = await getUser();
@@ -19,7 +16,6 @@ export default async function ChatPage() {
 
   return (
     <div>
-      <h1>Chat Page</h1>
       <Chatlist user={user} chatrooms={chatrooms} />
       <Userlist user={user} users={users} />
     </div>

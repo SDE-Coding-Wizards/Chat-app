@@ -8,7 +8,9 @@ import { User } from "@/types/user";
 import { JWTPayload, KeyLike, SignJWT } from "jose";
 
 const schema = z.object({
-  email: z.string({ message: "Invalid email." }),
+  email: z
+    .string({ message: "Invalid email." })
+    .email({ message: "Invalid email." }),
   password: z
     .string({ message: "Invalid password." })
     .min(8, { message: "Password must be at least 8 characters long." }),
@@ -40,7 +42,6 @@ export async function POST(req: Request, res: NextResponse) {
       "SELECT * FROM users WHERE email = ?",
       [email]
     )) as unknown as any[];
-    console.log("🚀 ~ POST ~ users:", rows);
     if (rows && rows.length > 0) {
       return new Response("User already exists!", { status: 409 });
     }
@@ -56,7 +57,6 @@ export async function POST(req: Request, res: NextResponse) {
   //hash password
   const salt = bcrypt.genSaltSync(10);
   const passwordHash = bcrypt.hashSync(password, salt);
-  console.log("🚀 ~ POST ~ passwordHash:", passwordHash);
 
   //make user
   const user = {

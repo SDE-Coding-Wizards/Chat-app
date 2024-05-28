@@ -14,9 +14,7 @@ export default function SignUp() {
 
     const { privateKey, publicKey } = await generateKeys();
 
-    const key = process.env.NEXT_PUBLIC_ENCRYPTION_KEY;
-
-    // if (!key) throw new Error("No key found");
+    const key = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "secret";
 
     // const { content, iv } = encryptMessage(privateKey, key);
 
@@ -27,8 +25,6 @@ export default function SignUp() {
       //! DONT DO THIS IN NORMALLY
       privateKey,
     });
-
-    console.log(newUser);
 
     localStorage.setItem("privateKey", privateKey);
   }
