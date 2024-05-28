@@ -1,9 +1,8 @@
 "use client";
 
-import { Message } from "@/types";
 import { useEffect, useRef } from "react";
 
-export default function MessagesEnd({ messages }: { messages: Message[] }) {
+export default function MessagesEnd() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -12,9 +11,7 @@ export default function MessagesEnd({ messages }: { messages: Message[] }) {
 
   useEffect(() => {
     scrollToBottom();
-  }
-  // , [messages]
-);
+  });
 
   return <div ref={messagesEndRef} />;
 }

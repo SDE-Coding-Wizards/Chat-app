@@ -26,8 +26,6 @@ export default function SignUp() {
       privateKey,
     });
 
-    console.log(newUser);
-
     localStorage.setItem("privateKey", privateKey);
   }
   return (
