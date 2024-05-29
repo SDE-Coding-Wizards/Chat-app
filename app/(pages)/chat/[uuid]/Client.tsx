@@ -34,7 +34,7 @@ export default function Client({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
-  const socket = useWebsocket("/chat", {
+  const [socket] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
   });
