@@ -1,6 +1,9 @@
 import { Message } from "../types";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -22,6 +25,8 @@ chat.on("connection", async (socket: Socket) => {
   });
 });
 
-httpServer.listen(5000, () => {
-  console.log("Server listening on port 5000");
+const PORT = process.env.WS_PORT || 5000;
+
+httpServer.listen(PORT, () => {
+  console.log("Server listening on port", PORT);
 });
