@@ -37,7 +37,6 @@ export async function POST(req: Request, res: NextResponse) {
 
   //check if user exists
   const connection = await getPool();
-
   try {
     const rows = (await connection.execute(
       "SELECT * FROM users WHERE email = ?",
@@ -53,6 +52,8 @@ export async function POST(req: Request, res: NextResponse) {
         status: 500,
       }
     );
+  } finally {
+    await connection.end();
   }
 
   //hash password
