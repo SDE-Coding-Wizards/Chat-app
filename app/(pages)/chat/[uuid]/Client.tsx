@@ -7,6 +7,7 @@ import { Message, MessageWithLoading, Chatroom, User } from "@/types";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks/useWebsocket";
+import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
@@ -90,18 +91,7 @@ export default function Client({
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
           {chatKey ? (
             <div className="flex flex-col gap-4">
-              {messages.map((msg) => (
-                <div
-                  key={msg.uuid}
-                  className={`py-2 px-3 w-fit bg-base-300 rounded ${
-                    msg?.isLoading ? "opacity-70" : ""
-                  }`}
-                >
-                  {msg?.isLoading
-                    ? msg.content!.content
-                    : decryptMessage(msg.content!.content, chatKey, msg.iv!)}
-                </div>
-              ))}
+              <ChatRenderer data={messages} chatKey={chatKey} />
             </div>
           ) : (
             <div>Loading...</div>

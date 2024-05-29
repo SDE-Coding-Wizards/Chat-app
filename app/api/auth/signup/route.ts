@@ -5,7 +5,7 @@ import { getPool } from "@/lib/server/database";
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { User } from "@/types/user";
+import { CreateUser, User } from "@/types/user";
 import { JWTPayload, KeyLike, SignJWT } from "jose";
 
 const schema = z.object({
@@ -61,37 +61,32 @@ export async function POST(req: Request, res: NextResponse) {
   const passwordHash = bcrypt.hashSync(password, salt);
 
   //make user
-  const user = {
+  const user: CreateUser = {
     email: email,
     password: passwordHash,
-    status_id: 2,
     public_key: publicKey,
     private_key: privateKey,
-  } as User;
+  };
 
   //save user in database
-  const [newUser] = await connection.execute(
-    "INSERT INTO users (uuid, email, password, status_id, public_key, private_key) VALUES (uuid(), ?, ?, ?, ?, ?) RETURNING *",
-    [
-      user.email,
-      user.password,
-      user.status_id,
-      user.public_key,
-      user.private_key,
-    ]
+  const [newUser]: User[] = await connection.execute(
+    "INSERT INTO users (uuid, email, password,  public_key, private_key) VALUES (uuid(), ?, ?, ?, ?) RETURNING *",
+    [user.email, user.password, user.public_key, user.private_key]
   );
 
   //set user token in cookies
   const SECRETKEY = process.env.JWT_SECRET_KEY as string;
   const secret = new TextEncoder().encode(SECRETKEY || "secret");
   const payload: JWTPayload = {
-    uuid: user.uuid,
-    email: user.email,
+    uuid: newUser.uuid,
+    email: newUser.email,
   };
+
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("24h")
     .sign(secret);
+
   cookies().set("token", token, {
     path: "/",
     httpOnly: true,

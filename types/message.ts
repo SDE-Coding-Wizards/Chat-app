@@ -12,6 +12,8 @@ export interface Message {
   chatroom?: Chatroom;
   content?: Content;
   author?: User;
+
+  chatKey?: string;
 }
 
 export interface MessageWithLoading extends Message {
