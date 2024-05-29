@@ -30,9 +30,8 @@ export async function POST(req: Request, res: NextResponse) {
   //find user in database
   let user: User | null = null;
 
+  const connection = await getPool();
   try {
-    const connection = await getPool();
-
     [user] = await connection.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
@@ -40,14 +39,14 @@ export async function POST(req: Request, res: NextResponse) {
     if (!user) {
       return new Response("Invalid credentials", { status: 400 });
     }
-
-    await connection.end();
   } catch (error) {
     console.error("error", error);
     return new Response(
       "An error occurred while checking if the user exists.",
       { status: 500 }
     );
+  } finally {
+    await connection.end();
   }
 
   //compare password
@@ -58,7 +57,7 @@ export async function POST(req: Request, res: NextResponse) {
   }
 
   //set user token in cookies
-  const SECRETKEY = process.env.JWT_SECRET_KEY as string
+  const SECRETKEY = process.env.JWT_SECRET_KEY as string;
 
   const secret = new TextEncoder().encode(SECRETKEY || "secret");
   const payload: JWTPayload = {

@@ -29,8 +29,8 @@ export async function POST(req: Request, res: NextResponse) {
 
   //find user in database
   let users: User[] | null = null;
+  const connection = await getPool();
   try {
-    const connection = await getPool();
     const [rows] = (await connection.execute(
       "SELECT * FROM users WHERE uuid = ?",
       [userId]
@@ -41,12 +41,12 @@ export async function POST(req: Request, res: NextResponse) {
     users = rows as User[];
   } catch (error) {
     console.error("error", error);
+    connection.end();
     return new Response(
       "An error occurred while checking if the user exists.",
       { status: 500 }
     );
   }
-
   const user = users[0];
 
   //encrypt password
@@ -54,8 +54,8 @@ export async function POST(req: Request, res: NextResponse) {
   const passwordHash = bcrypt.hashSync(newPassword, salt);
 
   //update password in database
+
   try {
-    const connection = await getPool();
     const [rows] = await connection.execute(
       "UPDATE users SET password = ? WHERE uuid = ?",
       [passwordHash, userId]
@@ -63,11 +63,13 @@ export async function POST(req: Request, res: NextResponse) {
     console.log("🚀 ~ POST ~ rows:", rows);
   } catch (error) {
     console.error("error", error);
+    connection.end();
     return new Response("An error occurred while updating the password.", {
       status: 500,
     });
+  } finally {
+    connection.end();
   }
-
   //set user token in cookies
   const SECRETKEY = process.env.SECRETKEY!;
   const token = jwt.sign(user, SECRETKEY, { expiresIn: "1h" });
