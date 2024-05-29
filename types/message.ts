@@ -13,3 +13,7 @@ export interface Message {
   content?: Content;
   author?: User;
 }
+
+export interface MessageWithLoading extends Message {
+  isLoading?: boolean;
+}

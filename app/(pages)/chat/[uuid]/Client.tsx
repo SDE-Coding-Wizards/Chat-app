@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
-import { Message, Chatroom, User } from "@/types";
+import { Message, MessageWithLoading, Chatroom, User } from "@/types";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks/useWebsocket";
@@ -20,10 +20,6 @@ interface ClientProps {
   initialMessages: Message[];
   initialChatrooms: Chatroom[];
   encryptedChatKey: string;
-}
-
-interface MessageWithLoading extends Message {
-  isLoading?: boolean;
 }
 
 export default function Client({
