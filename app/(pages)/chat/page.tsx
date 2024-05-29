@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import Userlist from "./Userlist";
 import { getChatrooms } from "./[uuid]/functions";
-import { Chatlist } from "@/components";
+import { Chatlist, Userlist } from "@/components";
 import { User } from "@/types/user";
 import { getPool } from "@/lib/server/database";
 import { getUser } from "@/utils/getUser";

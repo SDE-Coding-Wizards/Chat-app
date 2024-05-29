@@ -1,9 +1,8 @@
 "use client";
 
-import { Chatroom } from "@/types";
 import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { createChatParams } from "@/utils/createChat";
+import { createChatParams } from "@/helpers/createChat";
 
 interface UserlistProps {
   user: User;
