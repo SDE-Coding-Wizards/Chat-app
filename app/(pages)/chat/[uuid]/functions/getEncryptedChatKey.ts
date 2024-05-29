@@ -11,7 +11,7 @@ export async function getEncryptedChatKey(
     [chatroom_uuid, user_uuid]
   );
 
-  await conn.end();
+  await conn.release();
 
   return chat_key;
 }

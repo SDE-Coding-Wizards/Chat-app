@@ -36,7 +36,7 @@ export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
     );
   }
 
-  await conn.end();
+  await conn.release();
 
   return chatrooms;
 }

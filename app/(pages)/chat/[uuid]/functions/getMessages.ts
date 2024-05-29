@@ -29,6 +29,6 @@ export async function getMessages(chatroom_uuid: string): Promise<Message[]> {
       },
     ] as any;
   } finally {
-    await conn.end();
+    await conn.release();
   }
 }

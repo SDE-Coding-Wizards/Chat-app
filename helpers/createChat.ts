@@ -34,7 +34,7 @@ export const createChat: createChatParams = async (creator, members, name) => {
   );
 
   await conn.commit();
-  await conn.end();
+  await conn.release();
 
   return newChatroom;
 };

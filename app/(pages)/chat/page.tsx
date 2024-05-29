@@ -28,7 +28,7 @@ async function getAllUsers(): Promise<User[]> {
 
   const users = await conn.query("SELECT * FROM users");
 
-  await conn.end();
+  await conn.release();
 
   return users;
 }

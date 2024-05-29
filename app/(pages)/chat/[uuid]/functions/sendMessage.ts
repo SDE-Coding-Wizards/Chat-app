@@ -37,7 +37,7 @@ export async function sendMessage(
 
       reject(error);
     } finally {
-      await conn.end();
+      await conn.release();
     }
   });
 }

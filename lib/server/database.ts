@@ -8,13 +8,27 @@ export const getClient = async () => {
   return connection;
 };
 
-let pool: mariadb.Pool | null = null;
+const pool = mariadb.createPool({
+  user: "root",
+  password: "root",
+  database: "chatapp",
+  connectionLimit: 3
+});
+
+let conn: mariadb.PoolConnection;
 
 //for multiple queries
-export const getPool = async () => {
-  if (pool) return pool.getConnection();
+export async function getPool() {
+  if (conn) return conn;
 
-  pool = mariadb.createPool(DATABASE_URL);
-
-  return await pool.getConnection();
-};
+  try {
+    conn = await pool.getConnection();
+    console.log("Successfully connected to the database");
+    return conn;
+  } catch (err) {
+    const error = err as mariadb.SqlError;
+    console.error("Unable to connect to the database:", error.sqlMessage);
+    if (conn) conn.release();
+    throw err;
+  }
+}
