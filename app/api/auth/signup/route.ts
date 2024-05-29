@@ -28,7 +28,6 @@ export async function POST(req: Request, res: NextResponse) {
   const result = schema.safeParse(json);
   if (result.success === false) {
     const error = result.error.errors[0].message;
-    console.log("🚀 ~ POST ~ error:", error);
     return new Response("Invalid request body: " + error, {
       status: 400,
     });

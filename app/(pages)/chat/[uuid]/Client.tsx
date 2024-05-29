@@ -91,7 +91,11 @@ export default function Client({
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
           {chatKey ? (
             <div className="flex flex-col gap-4">
-              <ChatRenderer data={messages} chatKey={chatKey} />
+              <ChatRenderer
+                data={messages}
+                chatKey={chatKey}
+                currentUser={user}
+              />
             </div>
           ) : (
             <div>Loading...</div>

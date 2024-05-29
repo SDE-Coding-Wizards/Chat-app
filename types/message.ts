@@ -14,6 +14,7 @@ export interface Message {
   author?: User;
 
   chatKey?: string;
+  isCurrentUser?: boolean;
 }
 
 export interface MessageWithLoading extends Message {

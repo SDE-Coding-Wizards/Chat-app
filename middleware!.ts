@@ -21,7 +21,6 @@ export async function middleware(request: NextRequest & { user?: User }) {
   try {
     // Verify the token
 
-    console.log("🚀 ~ middleware ~ token:", token);
     const { payload } = await jwtVerify(token, secret);
     const decodedUser = payload as unknown as User | null;
 
@@ -31,7 +30,7 @@ export async function middleware(request: NextRequest & { user?: User }) {
 
     // If token is valid, you can set user info in headers or modify request
     const user = decodedUser as User;
-    console.log("🚀 ~ middleware ~ user:", user);
+
     request.user = user;
 
     // Continue to the next middleware or route handler

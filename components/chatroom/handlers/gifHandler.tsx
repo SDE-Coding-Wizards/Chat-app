@@ -1,4 +1,4 @@
-import { GifComponent } from "../handlerComponents/gitHandler";
+import { GifComponent } from "../handlerComponents/gifHandler";
 import { Message } from "@/types/message";
 import { AbstractHandler } from "./baseHandler";
 

@@ -33,7 +33,7 @@ export async function sendMessage(
     } catch (error) {
       await conn.rollback();
 
-      console.log(error);
+      console.error(error);
 
       reject(error);
     } finally {
