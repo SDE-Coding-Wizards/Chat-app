@@ -1,6 +1,6 @@
 import { Chatroom, User } from "@/types";
 import axios from "axios";
-import { encryptKey, generateKey } from "./key";
+import { encryptKey, generateKey } from "../utils/key";
 import { getPool } from "@/lib/server/database";
 
 export type createChatParams = (
