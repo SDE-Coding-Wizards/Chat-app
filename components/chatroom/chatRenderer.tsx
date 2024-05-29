@@ -1,12 +1,14 @@
-import { Message } from "@/types";
+import { Message, User } from "@/types";
 import { EmojiHandler } from "./handlers/emojiHandler";
 import { GifHandler } from "./handlers/gifHandler";
 import { ImageHandler } from "./handlers/imageHandler";
 import { TextHandler } from "./handlers/textHandler";
-export const ChatRenderer: React.FC<{ data: Message[]; chatKey: string }> = ({
-  data,
-  chatKey,
-}) => {
+import { isCurrentUser } from "@/utils/chatBubblePossitioner";
+export const ChatRenderer: React.FC<{
+  data: Message[];
+  chatKey: string;
+  currentUser: User;
+}> = ({ data, chatKey, currentUser }) => {
   const imageHandler = new ImageHandler();
   const gifHandler = new GifHandler();
   const textHandler = new TextHandler();
@@ -15,10 +17,14 @@ export const ChatRenderer: React.FC<{ data: Message[]; chatKey: string }> = ({
   imageHandler.setNext(gifHandler).setNext(textHandler).setNext(emojiHandler);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1 w-full">
       {data.map((message, index) => (
         <div key={index}>
-          {imageHandler.handle({ ...message, chatKey }) || (
+          {imageHandler.handle({
+            ...message,
+            chatKey,
+            isCurrentUser: isCurrentUser(currentUser, message),
+          }) || (
             <div>
               <div role="alert" className="alert alert-error w-fit">
                 <svg

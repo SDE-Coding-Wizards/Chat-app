@@ -20,7 +20,6 @@ export async function POST(req: Request, res: NextResponse) {
   const result = schema.safeParse(json);
   if (result.success === false) {
     const error = result.error.errors[0].message;
-    console.log("🚀 ~ POST ~ error:", error);
     return new Response("Invalid request body: " + error, {
       status: 400,
     });
@@ -51,7 +50,6 @@ export async function POST(req: Request, res: NextResponse) {
 
   //compare password
   const matches = await bcrypt.compare(password, user.password);
-  console.log("🚀 ~ POST ~ matches:", matches);
   if (!matches) {
     return new Response("Invalid credentials.", { status: 400 });
   }

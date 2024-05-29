@@ -107,7 +107,7 @@ async function getMessages(chatroom_uuid: string): Promise<Message[]> {
 
     return messages.reverse();
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return [
       {
@@ -158,7 +158,7 @@ async function sendMessage(
     } catch (error) {
       await conn.rollback();
 
-      console.log(error);
+      console.error(error);
 
       reject(error);
     } finally {
