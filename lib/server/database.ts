@@ -8,12 +8,7 @@ export const getClient = async () => {
   return connection;
 };
 
-const pool = mariadb.createPool({
-  user: "root",
-  password: "root",
-  database: "chatapp",
-  connectionLimit: 3
-});
+const pool = mariadb.createPool(DATABASE_URL);
 
 let conn: mariadb.PoolConnection;
 
