@@ -34,7 +34,7 @@ export default function Client({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
-  const [socket] = useWebsocket("/chat", {
+  const [socket, connected] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
   });
@@ -89,6 +89,7 @@ export default function Client({
       <Chatlist chatrooms={chatrooms} />
       <section className="flex flex-col w-full h-full p-4 gap-4">
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
+          {!connected && <div className="mx-auto">Websocket not connected...</div>}
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer
@@ -98,7 +99,7 @@ export default function Client({
               />
             </div>
           ) : (
-            <div>Loading...</div>
+            <div className="mx-auto">Loading...</div>
           )}
 
           <MessagesEnd />
