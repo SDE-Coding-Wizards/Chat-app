@@ -10,7 +10,9 @@ interface WebsocketOptions {
   room: string;
 }
 
-const { WS_SERVER = "http://localhost", WS_PORT = 5000 } = process.env;
+
+const WS_SERVER = process.env.NEXT_PUBLIC_WS_SERVER || "http://localhost";
+const WS_PORT = process.env.NEXT_PUBLIC_WS_PORT || 5000;
 
 const baseUrl = `${WS_SERVER}:${WS_PORT}`;
 
