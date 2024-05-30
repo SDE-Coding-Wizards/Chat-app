@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between h-20 bg-base-200 border-b-2 border-base-300">
       <div className="flex items-center justify-center w-full">
         <Link href="/" className="font-bold text-3xl rounded-md">
-          Chat App
+          Chat Wizards
         </Link>
       </div>
       <div className="flex items-center">
