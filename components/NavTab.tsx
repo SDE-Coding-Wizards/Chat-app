@@ -1,3 +1,6 @@
+import Image from 'next/image'
+import Link from 'next/link';
+
 export default function NavTab() {
     return (
         <nav className="bg-base-200 w-full p-4 flex justify-around items-center shadow-lg">
@@ -25,6 +28,15 @@ export default function NavTab() {
             >
                 Add Friend
             </a>
+            <Link href="/profileSettings">
+                <Image className='rounded-3xl'
+                    src='/default.webp'
+                    alt='Profile Picture'
+                    width={50}
+                    height={50}
+
+                />
+            </Link>
         </nav>
     );
 }
