@@ -15,11 +15,6 @@ const config: Config = {
     themes: [
       "light",
       "dark",
-      "cupcake",
-      "bumblebee",
-      "emerald",
-      "corporate",
-      "synthwave",
       "retro",
       "cyberpunk",
       "valentine",

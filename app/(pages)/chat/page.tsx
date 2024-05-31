@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getChatrooms } from "./[uuid]/functions";
-import { Chatlist, Userlist } from "@/components";
+import { Chatlist, Userlist, NavTab } from "@/components";
 import { User } from "@/types/user";
 import { getPool } from "@/lib/server/database";
 import { getUser } from "@/utils/getUser";
@@ -16,6 +16,7 @@ export default async function ChatPage() {
 
   return (
     <div>
+      <NavTab />
       <Chatlist chatrooms={chatrooms} />
       <Userlist user={user} users={users} createChat={createChat} />
     </div>
