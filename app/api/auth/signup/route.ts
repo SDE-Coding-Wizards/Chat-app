@@ -27,11 +27,15 @@ export async function POST(req: Request, res: NextResponse) {
   //validate request body
   const result = schema.safeParse(json);
   if (result.success === false) {
-    const error = result.error.errors[0].message;
-    return new Response("Invalid request body: " + error, {
+    console.log("🚀 ~ POST ~ result:", JSON.stringify(result));
+    const errors = result.error.flatten();
+
+    //return object with errors and form data
+    return new Response(JSON.stringify({ errors: errors.fieldErrors }), {
       status: 400,
     });
   }
+
   const { email, password, publicKey, privateKey } = result.data;
 
   //check if user exists
