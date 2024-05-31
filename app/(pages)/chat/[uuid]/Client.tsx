@@ -8,6 +8,7 @@ import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
+import { ContentType } from "@/types/content";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
@@ -42,10 +43,14 @@ export default function Client({
   const chatKey = useChatKey(encryptedChatKey, user);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const content = formData.get("message_content") as string;
 
-    e.preventDefault();
+    const isEmoji = content.match(/:[a-z_]+:/g);
+    const contentTypeId: number =
+      isEmoji && content.length >= 3 ? ContentType.EMOJI : ContentType.TEXT;
+
     e.currentTarget.reset();
 
     if (!content.trim()) return;
@@ -56,7 +61,7 @@ export default function Client({
       ...messages,
       {
         uuid,
-        content: { content },
+        content: { content, content_type_id: contentTypeId },
         isLoading: true,
       } as MessageWithLoading,
     ]);
@@ -89,7 +94,9 @@ export default function Client({
       <Chatlist chatrooms={chatrooms} />
       <section className="flex flex-col w-full h-full p-4 gap-4">
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
-          {!connected && <div className="mx-auto">Websocket not connected...</div>}
+          {!connected && (
+            <div className="mx-auto">Websocket not connected...</div>
+          )}
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer

@@ -1,64 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SignInUpProps {
   type: "Sign in" | "Sign up";
-  handleSubmit: (email: string, password: string) => void;
+  handleSubmit: (email: string, password: string) => Promise<any>;
 }
 
 export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [error, setError] = useState<{ email: string; password: string }>();
+
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ error", error);
+  }, [error]);
   return (
     <form
       className="full-center"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        handleSubmit(email, password);
+        let res = await handleSubmit(email, password);
+        console.log("🚀 ~ onSubmit={ ~ res:", res, res.errors?.email[0]);
+        setError(res.errors);
+        //log every time the error changes with useEffect
       }}
     >
       <div className="flex flex-col space-y-4">
-        <label className="input input-bordered flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="w-4 h-4 opacity-70"
+        <div>
+          <label
+            className={`${
+              error?.email ? "input-error" : ""
+            } input input-bordered flex items-center gap-2`}
           >
-            <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-            <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-          </svg>
-          <input
-            type="text"
-            className="grow"
-            placeholder="Email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </label>
-        <label className="input input-bordered flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="w-4 h-4 opacity-70"
-          >
-            <path
-              fillRule="evenodd"
-              d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-              clipRule="evenodd"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-4 h-4 opacity-70"
+            >
+              <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+              <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+            </svg>
+            <input
+              type="text"
+              className={"grow"}
+              placeholder="Email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
             />
-          </svg>
-          <input
-            type="password"
-            className="grow"
-            placeholder="Password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </label>
+          </label>
+          {error?.email && (
+            <div className="text-error text-sm mt-1">{error.email[0]}</div>
+          )}
+        </div>
+        <div>
+          <label
+            className={`${
+              error?.password ? "input-error" : ""
+            } input input-bordered flex items-center gap-2`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-4 h-4 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input
+              type="password"
+              className="grow"
+              placeholder="Password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </label>
+          {error?.password && (
+            <div className="text-error text-sm mt-1">{error.password[0]}</div>
+          )}
+        </div>
         <button className="px-4 py-2 btn btn-neutral text-xl font-bold rounded-lg">
           <div className="bg-white rounded-full p-1 mr-3">
             <svg
@@ -92,6 +118,25 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
         >
           {type}
         </button>
+        <div className="flex flex-col gap-4">
+          {type === "Sign up" && (
+            <>
+              <a href="/login" className="btn btn-link btn-sm">
+                Already have an account? Sign in
+              </a>
+            </>
+          )}
+          {type === "Sign in" && (
+            <>
+              <a href="/forgot-password" className="btn btn-link btn-sm">
+                Forgot password?
+              </a>
+              <a href="/signUp" className="btn btn-link btn-sm">
+                Don't have an account? Sign up
+              </a>
+            </>
+          )}
+        </div>
       </div>
     </form>
   );
