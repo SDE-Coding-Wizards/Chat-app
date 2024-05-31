@@ -1,9 +1,3 @@
-import { Message, User } from "@/types";
-
-export function isCurrentUser(user: User, message: Message) {
-  if (user.uuid === message.author_uuid) {
-    return true;
-  } else {
-    return false;
-  }
+export function isCurrentUser(user: user, message: message) {
+  return user.uuid === message.author_uuid;
 }

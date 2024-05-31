@@ -2,8 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --nav-height: 4rem;
+  --footer-height: 4rem;
+}
+
+nav {
+  height: var(--nav-height);
+}
+
+footer {
+  height: var(--footer-height);
+}
+
+nav,
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  @apply bg-base-200 border-base-300;
+}
+
 main {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - var(--nav-height) - var(--footer-height));
 }
 
 .full-center {

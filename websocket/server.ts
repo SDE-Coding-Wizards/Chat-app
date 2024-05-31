@@ -1,4 +1,3 @@
-import { Message } from "../types";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import dotenv from "dotenv";
@@ -20,7 +19,7 @@ chat.on("connection", async (socket: Socket) => {
     socket.join(chatroom_uuid);
   });
 
-  socket.on("send-message", (message: Message) => {
+  socket.on("send-message", (message: message) => {
     chat.to(message.chatroom_uuid).emit("receive-message", message);
   });
 });

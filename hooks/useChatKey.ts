@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { decryptKey } from "@/utils/key";
-import { ChatroomMember, User } from "@/types";
 
 export function useChatKey(
-  chatroomKey: ChatroomMember["chat_key"],
-  user?: User
+  chatroomKey: chatroom_member["chat_key"],
+  user?: user
 ): string {
   const [chatKey, setChatKey] = useState<string>("");
 

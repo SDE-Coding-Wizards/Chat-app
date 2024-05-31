@@ -1,6 +1,5 @@
 import Client from "./Client";
-// import { getClient } from "@/lib/server/database";
-import { getUser } from "@/utils/getUser";
+import { getUser } from "@/helpers/getUser";
 import { notFound } from "next/navigation";
 import {
   getChatrooms,
@@ -10,7 +9,7 @@ import {
 } from "./functions";
 
 interface ChatProps {
-  params: { uuid: string };
+  params: { uuid: UUID };
 }
 
 export default async function Chat({ params: { uuid } }: ChatProps) {

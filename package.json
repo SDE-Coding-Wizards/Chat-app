@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "types": "node lib/server/createTypes"
+    "types": "node sql/createTypes"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",

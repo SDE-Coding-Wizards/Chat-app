@@ -3,23 +3,22 @@
 import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
-import { Message, MessageWithLoading, Chatroom, User } from "@/types";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 
 interface ClientProps {
-  chatroom_uuid: Chatroom["uuid"];
-  user: User;
+  chatroom_uuid: chatroom["uuid"];
+  user: user;
   sendMessage: (
     uuid: string,
-    message: Message,
-    chatroom_uuid: Chatroom["uuid"],
-    author_uuid: User["uuid"]
-  ) => Promise<Message>;
-  initialMessages: Message[];
-  initialChatrooms: Chatroom[];
+    message: message,
+    chatroom_uuid: chatroom["uuid"],
+    author_uuid: user["uuid"]
+  ) => Promise<message>;
+  initialMessages: message[];
+  initialChatrooms: chatroom[];
   encryptedChatKey: string;
 }
 
@@ -33,10 +32,14 @@ export default function Client({
 }: ClientProps) {
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
-  const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
-  const [socket, connected] = useWebsocket("/chat", {
+  const [chatrooms, setChatrooms] = useState<chatroom[]>(initialChatrooms);
+  const [chatSocket, connected] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
+  });
+  const [roomsSocket] = useWebsocket("/chatrooms", {
+    events: { "receive-room": setChatrooms },
+    room: user.uuid,
   });
 
   const chatKey = useChatKey(encryptedChatKey, user);
@@ -61,7 +64,7 @@ export default function Client({
       } as MessageWithLoading,
     ]);
 
-    const encryptedMessage = encryptMessage(content, chatKey) as Message;
+    const encryptedMessage = encryptMessage(content, chatKey) as message;
 
     const newMessage = await sendMessage(
       uuid,
@@ -70,10 +73,10 @@ export default function Client({
       user.uuid
     );
 
-    socket.emit("send-message", newMessage);
+    chatSocket.emit("send-message", newMessage);
   }
 
-  function updateList(newMessage: Message) {
+  function updateList(newMessage: message) {
     setMessages((prev) => {
       let newList = [...prev];
 
@@ -93,7 +96,7 @@ export default function Client({
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer
-                data={messages}
+                data={messages as TextMessage[]}
                 chatKey={chatKey}
                 currentUser={user}
               />

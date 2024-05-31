@@ -1,5 +1,3 @@
-import { MessageWithLoading } from "@/types/message";
-
 interface Handler {
   setNext(handler: Handler): Handler;
   handle(request: MessageWithLoading): JSX.Element | null;

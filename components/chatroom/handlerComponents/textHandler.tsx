@@ -1,7 +1,7 @@
-import { Message } from "@/types";
+import { TextMessage } from "@/types/message";
 import { decryptMessage } from "@/utils/symmetric";
 
-export function TextComponent({ message }: { message: Message }) {
+export function TextComponent({ message }: { message: TextMessage }) {
   return (
     <div
       className={(message.isCurrentUser ? "chat-end" : "chat-start") + " chat"}

@@ -1,13 +1,13 @@
-import { Message, User } from "@/types";
 import { EmojiHandler } from "./handlers/emojiHandler";
 import { GifHandler } from "./handlers/gifHandler";
 import { ImageHandler } from "./handlers/imageHandler";
 import { TextHandler } from "./handlers/textHandler";
 import { isCurrentUser } from "@/utils/chatBubblePossitioner";
+
 export const ChatRenderer: React.FC<{
-  data: Message[];
+  data: TextMessage[];
   chatKey: string;
-  currentUser: User;
+  currentUser: user;
 }> = ({ data, chatKey, currentUser }) => {
   const imageHandler = new ImageHandler();
   const gifHandler = new GifHandler();

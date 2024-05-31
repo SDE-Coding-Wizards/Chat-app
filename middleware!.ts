@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
-import { User } from "./types/user";
-import { getClient } from "./lib/server/database";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 if (!JWT_SECRET) {
   throw new Error("The environment variable JWT_SECRET is not set.");
 }
 
-export async function middleware(request: NextRequest & { user?: User }) {
+export async function middleware(request: NextRequest & { user?: user }) {
   // Get JWT token
   const token = request.cookies.get("token")?.value;
   if (!token) {
@@ -22,14 +20,14 @@ export async function middleware(request: NextRequest & { user?: User }) {
     // Verify the token
 
     const { payload } = await jwtVerify(token, secret);
-    const decodedUser = payload as unknown as User | null;
+    const decodedUser = payload as unknown as user | null;
 
     if (!decodedUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     // If token is valid, you can set user info in headers or modify request
-    const user = decodedUser as User;
+    const user = decodedUser as user;
 
     request.user = user;
 

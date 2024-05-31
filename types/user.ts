@@ -1,4 +1,3 @@
-import { UUID } from "./uuid";
 export interface User extends CreateUser {
   uuid: UUID;
   firstname?: string;

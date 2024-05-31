@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Chatroom } from "@/types";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
 
 interface ChatlistProps {
-  chatrooms: Chatroom[];
+  chatrooms: chatroom[];
 }
 
 export default function Chatlist({ chatrooms }: ChatlistProps) {
@@ -50,8 +49,8 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
             prefetch
           >
             {chatroom?.name ||
-              chatroom.users
-                ?.map(({ firstname, email }) => firstname || email)
+              chatroom.chatroom_members
+                ?.map(({ user: { firstname, email } }) => firstname || email)
                 .join(", ")}
           </Link>
         ))}
@@ -72,9 +71,7 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Users
-              </label>
+              <label className="block text-sm font-medium">Users</label>
               <input
                 type="text"
                 value={users}
@@ -84,16 +81,10 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
               />
             </div>
             <div className="flex justify-end">
-              <button
-                onClick={closeCreateGroupModal}
-                className="p-2  mr-2"
-              >
+              <button onClick={closeCreateGroupModal} className="p-2  mr-2">
                 Cancel
               </button>
-              <button
-                onClick={handleCreateGroup}
-                className="p-2 "
-              >
+              <button onClick={handleCreateGroup} className="p-2 ">
                 Create
               </button>
             </div>

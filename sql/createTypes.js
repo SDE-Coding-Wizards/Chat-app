@@ -1,6 +1,7 @@
 import fs from "fs";
 import mariadb from "mariadb";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
@@ -15,8 +16,12 @@ const datatypes = {
   uuid: "UUID",
 };
 
+const typesPath = path.join(import.meta.dirname, "types");
+
 async function createTypes() {
-  const sqlQuery = fs.readFileSync("lib/server/getSQLTables.sql").toString();
+  const sqlQuery = fs
+    .readFileSync(path.join(import.meta.dirname, "getSQLTables.sql"))
+    .toString();
 
   const conn = await pool.getConnection();
 
@@ -27,6 +32,8 @@ async function createTypes() {
   const newTables = {};
   const reffingTables = {};
   const reffedTables = {};
+
+  let allTables = [];
 
   allColumns
     .sort((a, b) => Number(a.ORDINAL_POSITION) - Number(b.ORDINAL_POSITION))
@@ -41,6 +48,8 @@ async function createTypes() {
       REFERENCED_COLUMN_NAME: ref_col_name,
       COLUMN_DEFAULT: _default,
     } = column;
+
+    allTables.push(table);
 
     if (table !== "statuses") table = table.slice(0, -1);
     else table = "status";
@@ -57,6 +66,8 @@ async function createTypes() {
     if (name == "uuid") newTables[table][name] = "UUID";
 
     if (ref_col_name) {
+      newTables[table][name] = `${ref_table_name}["uuid"]`;
+
       if (!reffingTables[table]) reffingTables[table] = {};
       reffingTables[table][ref_table_name] = ref_col_name;
 
@@ -79,13 +90,22 @@ async function createTypes() {
     }
   }
 
+  if (!fs.existsSync(typesPath)) fs.mkdirSync(typesPath);
+
   fs.writeFileSync(
-    `lib/server/types.ts`,
-    "type UUID = `${string}-${string}-${string}-${string}-${string}`;\n\n"
+    typesPath + `/uuid.d.ts`,
+    "type UUID = `${string}-${string}-${string}-${string}-${string}`;"
+  );
+
+  allTables = [...new Set(allTables)];
+
+  fs.writeFileSync(
+    typesPath + "/tables.d.ts",
+    `type Tables = "${allTables.join('" | "')}";`
   );
 
   for (let newTable in newTables) {
-    let tableString = `export interface ${newTable} {\n`;
+    let tableString = `interface ${newTable} {\n`;
 
     for (let column in newTables[newTable]) {
       if (column.startsWith("space")) {
@@ -96,9 +116,9 @@ async function createTypes() {
       tableString += `  ${column}: ${newTables[newTable][column]};\n`;
     }
 
-    tableString += "}\n\n";
+    tableString += "}\n";
 
-    fs.writeFileSync(`lib/server/types.ts`, tableString, { flag: "a" });
+    fs.writeFileSync(typesPath + `/${newTable}.d.ts`, tableString);
   }
 }
 
