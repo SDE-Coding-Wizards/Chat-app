@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { generateKeys } from "@/utils/keyPair";
 import Sign_in_up from "@/components/Sign-up-in";
 
 export default function login() {
+  const router = useRouter();
+
   async function handleLogin(email: string, password: string) {
     if (!email || !password) return;
 
@@ -21,7 +23,7 @@ export default function login() {
     toast.promise(promise, {
       loading: "Signing in...",
       success: () => {
-        // redirect logic
+        router.push("/chat");
         return "Signed in successfully"
       },
       error: () => {
