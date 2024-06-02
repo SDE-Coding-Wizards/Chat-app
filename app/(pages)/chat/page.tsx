@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getChatrooms } from "./[uuid]/functions";
+import { getChatrooms, getUsers } from "./[uuid]/functions";
 import { Chatlist, Userlist, NavTab } from "@/components";
 import { createChat, getUser } from "@/helpers";
 
@@ -9,7 +9,7 @@ export default async function ChatPage() {
   if (!user) return notFound();
 
   const chatrooms = await getChatrooms(user.uuid);
-  const users = await getAllUsers();
+  const users = await getUsers();
 
   return (
     <div>
@@ -18,10 +18,4 @@ export default async function ChatPage() {
       <Userlist user={user} users={users} createChat={createChat} />
     </div>
   );
-}
-
-async function getAllUsers(): Promise<user[]> {
-  const users: user[] = await pool.query("SELECT * FROM users");
-
-  return users;
 }
