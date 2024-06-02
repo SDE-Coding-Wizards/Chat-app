@@ -1,7 +1,10 @@
-import { TextMessage } from "@/types/message";
 import { decryptMessage } from "@/utils/symmetric";
 
-export function TextComponent({ message }: { message: TextMessage }) {
+export function TextComponent({
+  message,
+}: {
+  message: TextMessage & MessageWithLoading;
+}) {
   return (
     <div
       className={(message.isCurrentUser ? "chat-end" : "chat-start") + " chat"}
@@ -12,7 +15,13 @@ export function TextComponent({ message }: { message: TextMessage }) {
           " chat-bubble"
         }
       >
-        {decryptMessage(message.content!.content, message.chatKey!, message.iv)}
+        {message.isLoading
+          ? message.content.content
+          : decryptMessage(
+              message.content!.content,
+              message.chatKey!,
+              message.iv
+            )}
       </p>
     </div>
   );

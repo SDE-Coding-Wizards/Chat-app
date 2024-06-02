@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { decryptMessage, encryptMessage } from "@/utils/symmetric";
+import { encryptMessage } from "@/utils/symmetric";
 import { getChatkey } from "@/helpers/getChatkey";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
@@ -31,6 +31,8 @@ export default function Client({
   initialChatrooms,
   encryptedChatKey,
 }: ClientProps) {
+  const chatKey = getChatkey(encryptedChatKey, user);
+
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatrooms, setChatrooms] = useState<chatroom[]>(initialChatrooms);
@@ -42,8 +44,6 @@ export default function Client({
     events: { "receive-room": setChatrooms },
     room: user.uuid,
   });
-
-  const chatKey = useChatKey(encryptedChatKey, user);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,6 +64,7 @@ export default function Client({
       ...messages,
       {
         uuid,
+        author_uuid: user.uuid,
         content: { content, content_type_id: contentTypeId },
         isLoading: true,
       } as MessageWithLoading,
@@ -98,7 +99,9 @@ export default function Client({
       <section className="flex flex-col w-full h-full p-4 gap-4">
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
           {!connected && (
-            <div className="mx-auto">Websocket not connected...</div>
+            <div className="flex w-full justify-center">
+              <p className="fixed">Websocket not connected...</p>
+            </div>
           )}
           {chatKey ? (
             <div className="flex flex-col gap-4">

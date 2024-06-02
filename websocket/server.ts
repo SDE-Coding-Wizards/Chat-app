@@ -19,7 +19,7 @@ chat.on("connection", async (socket: Socket) => {
     socket.join(chatroom_uuid);
   });
 
-  socket.on("send-message", (message: message) => {
+  socket.on("send-message", (message: any /* message */) => {
     chat.to(message.chatroom_uuid).emit("receive-message", message);
   });
 });
