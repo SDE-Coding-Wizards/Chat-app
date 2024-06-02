@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { Navbar, Footer } from "@/components";
 import { Toaster } from "react-hot-toast";
-import { pool } from "@/lib/server/database/connection";
+import "@/lib/server/database";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Chat App",
   description: "Chat App by SDE Code Wizards",
 };
-
-if (!pool) {
-  console.log("Database connection failed");
-}
 
 export default function RootLayout({
   children,

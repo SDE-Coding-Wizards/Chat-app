@@ -1,10 +1,17 @@
 import mariadb from "mariadb";
-const DATABASE_URL: string | undefined = process.env.DATABASE_URL!;
+const DATABASE_URL: string = process.env.DATABASE_URL!;
 
-//for creating a single querey
-export const getClient = async () => {
-  const connection = await mariadb.createConnection(DATABASE_URL);
+declare global {
+  var pool: mariadb.Pool;
+}
 
-  return connection;
-};
+const options = mariadb.defaultOptions(DATABASE_URL);
 
+export const pool =
+  globalThis.pool ||
+  mariadb.createPool({
+    ...options,
+    connectionLimit: 3,
+  });
+
+if (process.env.NODE_ENV !== "production") globalThis.pool = pool;
