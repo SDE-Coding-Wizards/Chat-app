@@ -23,11 +23,7 @@ async function createTypes() {
     .readFileSync(path.join(import.meta.dirname, "getSQLTables.sql"))
     .toString();
 
-  const conn = await pool.getConnection();
-
-  const allColumns = await conn.query(sqlQuery);
-
-  await conn.end();
+  const allColumns = await pool.query(sqlQuery);
 
   const newTables = {};
   const reffingTables = {};
