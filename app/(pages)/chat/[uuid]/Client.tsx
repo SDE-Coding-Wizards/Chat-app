@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
-import { useChatKey } from "@/hooks/useChatKey";
+import { getChatkey } from "@/helpers/getChatkey";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
-import { useWebsocket } from "@/hooks/useWebsocket";
+import { useWebsocket } from "@/hooks";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 import { ContentType } from "@/types/content";
 
