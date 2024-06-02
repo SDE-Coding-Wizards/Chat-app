@@ -1,4 +1,18 @@
-interface user {
+declare namespace user {
+  export interface referencing {
+    status: status;
+  }
+
+  export interface referenced {
+    chatroom_members: chatroom_member[];
+    friendships: friendship[];
+    messages: message[];
+    user_settings: user_setting[];
+    user_tags: user_tag[];
+  }
+}
+
+interface user extends user.referencing, user.referenced {
   uuid: UUID;
   email: string;
   password: string;
@@ -10,12 +24,4 @@ interface user {
   created_at: Date;
   public_key: string;
   private_key: string;
-
-  status: status;
-
-  chatroom_members: chatroom_member[];
-  friendships: friendship[];
-  messages: message[];
-  user_settings: user_setting[];
-  user_tags: user_tag[];
 }
