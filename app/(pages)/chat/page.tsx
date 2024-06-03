@@ -20,7 +20,7 @@ export default async function ChatPage() {
       <NavTab />
       
       <Chatlist chatrooms={chatrooms} />
-      <Userlist user={user} users={users} createChat={createChat} />
+      {/* <Userlist user={user} users={users} createChat={createChat} /> */}
     </div>
   );
 }
