@@ -1,5 +1,4 @@
 import Client from "./Client";
-// import { getClient } from "@/lib/server/database";
 import { getUser } from "@/utils/getUser";
 import { notFound } from "next/navigation";
 import {
