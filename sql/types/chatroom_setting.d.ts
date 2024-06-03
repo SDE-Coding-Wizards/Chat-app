@@ -1,5 +1,11 @@
-interface chatroom_setting {
-  chatroom_uuid: chatroom["uuid"];
+declare namespace chatroom_setting {
+  export interface referencing {
+    chatroom: chatroom;
+  }
 
-  chatroom: chatroom;
+  export interface referenced {}
+}
+
+interface chatroom_setting extends chatroom_setting.referencing, chatroom_setting.referenced {
+  chatroom_uuid: chatroom["uuid"];
 }

@@ -53,7 +53,7 @@ async function createTypes() {
       ref_table_name = ref_table_name.slice(0, -1);
     else ref_table_name = "status";
 
-    if (!newTables[table]) newTables[table] = {};
+    newTables[table] ??= {};
 
     name += column.IS_NULLABLE === "NO" ? "" : "?";
 
@@ -64,29 +64,14 @@ async function createTypes() {
     if (ref_col_name) {
       newTables[table][name] = `${ref_table_name}["uuid"]`;
 
-      if (!reffingTables[table]) reffingTables[table] = {};
-      reffingTables[table][ref_table_name] = ref_col_name;
-
-      if (!reffedTables[ref_table_name]) reffedTables[ref_table_name] = {};
-      reffedTables[ref_table_name][table] = ref_col_name;
+      (reffingTables[table] ??= {})[ref_table_name] = ref_col_name;
+      (reffedTables[ref_table_name] ??= {})[table] = ref_col_name;
     }
   }
 
-  for (let [table, value] of Object.entries(reffingTables)) {
-    newTables[table]["space1"] = "";
-    for (let refTable in value) {
-      newTables[table][refTable] = refTable;
-    }
-  }
+  if (fs.existsSync(typesPath)) fs.rmSync(typesPath, { recursive: true });
 
-  for (let [table, value] of Object.entries(reffedTables)) {
-    newTables[table]["space2"] = "";
-    for (let refTable in value) {
-      newTables[table][refTable + "s"] = `${refTable}[]`;
-    }
-  }
-
-  if (!fs.existsSync(typesPath)) fs.mkdirSync(typesPath);
+  fs.mkdirSync(typesPath);
 
   fs.writeFileSync(
     typesPath + `/uuid.d.ts`,
@@ -97,22 +82,50 @@ async function createTypes() {
 
   fs.writeFileSync(
     typesPath + "/tables.d.ts",
-    `type Tables = "${allTables.join('" | "')}";`
+    `type Tables =${allTables.map((table) => `\n  | "${table}"`).join("")};
+    `
   );
 
-  for (let newTable in newTables) {
-    let tableString = `interface ${newTable} {\n`;
+  function tablesString(newTable, type = "reffing") {
+    let tables, name, s, l;
 
-    for (let column in newTables[newTable]) {
-      if (column.startsWith("space")) {
-        tableString += "\n";
-        continue;
-      }
-
-      tableString += `  ${column}: ${newTables[newTable][column]};\n`;
+    if (type === "reffed") {
+      tables = reffedTables;
+      name = "referenced";
+      s = "s";
+      l = "[]";
+    } else {
+      tables = reffingTables;
+      name = "referencing";
+      s = "";
+      l = "";
     }
 
-    tableString += "}\n";
+    let returnString = `export interface ${name} {`;
+    if (!tables[newTable]) return returnString + "}";
+
+    returnString += "\n    ";
+    returnString += Object.keys(tables[newTable] || {})
+      .map((table) => `${table + s}: ${table + l};`)
+      .join("\n    ");
+
+    return returnString + "\n  }";
+  }
+
+  for (let newTable in newTables) {
+    let tableString = `\
+declare namespace ${newTable} {
+  ${tablesString(newTable, "reffing")}
+
+  ${tablesString(newTable, "reffed")}
+}
+
+interface ${newTable} extends ${newTable}.referencing, ${newTable}.referenced {
+  ${Object.entries(newTables[newTable])
+    .map(([column, value]) => `${column}: ${value};`)
+    .join("\n  ")}
+}
+`;
 
     fs.writeFileSync(typesPath + `/${newTable}.d.ts`, tableString);
   }
