@@ -1,17 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
+import { getChatrooms } from "../app/(pages)/chat/[uuid]/functions/getChatrooms";
+import { auth } from "@/firebase";
 
-interface ChatlistProps {
-  chatrooms: chatroom[];
-}
-
-export default function Chatlist({ chatrooms }: ChatlistProps) {
+export default function Chatlist() {
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [users, setUsers] = useState("");
+  const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
+  const [user, setUser] = useState<user | null | any>(null);
+
+  auth.onAuthStateChanged(setUser as any);
+
+  useEffect(() => {
+    if (!user) return;
+
+    getChatrooms(user.uid).then(setChatrooms);
+  }, [user]);
 
   const openCreateGroupModal = () => {
     setCreateGroupModalOpen(true);

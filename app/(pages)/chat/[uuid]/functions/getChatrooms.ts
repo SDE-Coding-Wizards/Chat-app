@@ -1,3 +1,5 @@
+"use server";
+
 export async function getChatrooms(user_uuid: string): Promise<chatroom[]> {
   const conn = await pool.getConnection();
 
