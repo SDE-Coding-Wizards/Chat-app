@@ -1,4 +1,5 @@
 export default function ProfileSettings() {
+
     return (
         <div className="text-center mt-5">
             <div className="flex justify-center items-center">
@@ -40,12 +41,15 @@ export default function ProfileSettings() {
                         placeholder="Password"
                     />
                     <label className="text-lg mt-5">Bio</label>
-                    <textarea
-                        id="bio"
-                        className="input input-primary w-64"
-                        placeholder="Tell us about yourself"
-                    />
+                    <div className="flex items-center">
+                        <textarea
+                            id="bio"
+                            className="input input-primary w-64 py-2"
+                            placeholder="Tell us about yourself"
+                        />
+                    </div>
                     <button className="btn mt-7 w-64">Save & Update</button>
+                    <button className="btn btn-neutral mt-3 w-64">Sign Out</button>
                 </div>
             </div>
         </div>
