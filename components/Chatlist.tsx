@@ -116,7 +116,7 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
         {isCreateGroupModalOpen && (
           <Modal onClose={closeCreateGroupModal}>
             <div className="p-4">
-              <h2 className="text-lg font-bold mb-4">Create Group</h2>
+              <h2 className="text-lg font-bold">Create Group</h2>
               <div className="mb-4">
                 <label className="block text-sm font-medium">
                   Group Name (optional)
