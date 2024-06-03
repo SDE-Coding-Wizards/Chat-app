@@ -96,7 +96,7 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
           } md:relative md:translate-x-0`}
       >
         <div className="flex justify-between text-lg font-bold">
-          <h2 className="mb-4">Recent Chats</h2>
+
           <button onClick={openCreateGroupModal} className="mb-5">
             Create Group
           </button>
