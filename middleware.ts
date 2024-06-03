@@ -8,6 +8,7 @@ if (!JWT_SECRET) {
 }
 
 export async function middleware(request: NextRequest & { user?: user }) {
+  if (process.env.NODE_ENV !== "production") return NextResponse.next();
   // Get JWT token
   const token = request.cookies.get("token")?.value;
   if (!token) {

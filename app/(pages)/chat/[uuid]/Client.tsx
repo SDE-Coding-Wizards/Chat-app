@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 import { ContentType } from "@/types/content";
+import { auth } from "@/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface ClientProps {
   chatroom_uuid: chatroom["uuid"];
@@ -32,6 +34,9 @@ export default function Client({
   encryptedChatKey,
 }: ClientProps) {
   const chatKey = getChatkey(encryptedChatKey, user);
+
+  const [user2, setUser2] = useState<user | null>(null);
+  onAuthStateChanged(auth, setUser2 as any);
 
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);

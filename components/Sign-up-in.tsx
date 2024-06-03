@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { KeyRound, Mail } from "lucide-react";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "@/firebase";
 
 interface SignInUpProps {
   type: "Sign in" | "Sign up";
@@ -10,29 +12,25 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [error, setError] = useState<{ email: string; password: string }>();
+  const provider = new GoogleAuthProvider();
 
-  useEffect(() => {
-    console.log("🚀 ~ useEffect ~ error", error);
-  }, [error]);
+  async function handleGoogleSignIn() {
+    const userCredential = await signInWithPopup(auth, provider);
+
+    console.log(userCredential);
+  }
+
   return (
     <form
       className="full-center"
       onSubmit={async (e) => {
         e.preventDefault();
-        let res = await handleSubmit(email, password);
-        console.log("🚀 ~ onSubmit={ ~ res:", res, res.errors?.email[0]);
-        setError(res.errors);
-        //log every time the error changes with useEffect
+        await handleSubmit(email, password);
       }}
     >
       <div className="flex flex-col space-y-4">
         <div>
-          <label
-            className={`${
-              error?.email ? "input-error" : ""
-            } input input-bordered flex items-center gap-2`}
-          >
+          <label className="input input-bordered flex items-center gap-2">
             <Mail size={20} />
             <input
               type="text"
@@ -43,16 +41,9 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
               }}
             />
           </label>
-          {error?.email && (
-            <div className="text-error text-sm mt-1">{error.email[0]}</div>
-          )}
         </div>
         <div>
-          <label
-            className={`${
-              error?.password ? "input-error" : ""
-            } input input-bordered flex items-center gap-2`}
-          >
+          <label className="input input-bordered flex items-center gap-2">
             <KeyRound size={20} />
             <input
               type="password"
@@ -63,11 +54,11 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
               }}
             />
           </label>
-          {error?.password && (
-            <div className="text-error text-sm mt-1">{error.password[0]}</div>
-          )}
         </div>
-        <button className="px-4 py-2 btn btn-neutral text-xl font-bold rounded-lg">
+        <button
+          className="px-4 py-2 btn btn-neutral text-xl font-bold rounded-lg"
+          onClick={handleGoogleSignIn}
+        >
           <div className="bg-white rounded-full p-1 mr-3">
             <svg
               className="w-5 h-5"

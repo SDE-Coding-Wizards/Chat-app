@@ -1,10 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { generateKeys } from "@/utils/keyPair";
 import Sign_in_up from "@/components/Sign-up-in";
+
+import { signInWithEmailAndPassword as signin } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { auth } from "@/firebase";
 
 export default function login() {
   const router = useRouter();
@@ -14,23 +17,20 @@ export default function login() {
 
     const { privateKey, publicKey } = await generateKeys();
 
-    const promise = axios.post("/api/auth/signin", {
-      email,
-      password,
-    });
+    const userCredential = signin(auth, email, password);
 
-    // Toaster library for message boxes
-    toast.promise(promise, {
+    const user = await toast.promise(userCredential, {
       loading: "Signing in...",
       success: () => {
         router.push("/chat");
-        return "Signed in successfully"
+        return "Signed in successfully";
       },
-      error: () => {
-        // error logic
-        return "Failed to sign in"
+      error: (err: FirebaseError) => {
+        return "Failed to sign up: " + err.message;
       },
     });
+
+    console.log(user);
 
     // localStorage.setItem("privateKey", privateKey);
   }
