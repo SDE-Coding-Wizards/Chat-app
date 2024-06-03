@@ -44,7 +44,7 @@ export default function ProfileSettings() {
                     <div className="flex items-center">
                         <textarea
                             id="bio"
-                            className="input input-primary w-64 py-2"
+                            className="textarea textarea-primary resize-none w-64 py-auto"
                             placeholder="Tell us about yourself"
                         />
                     </div>
