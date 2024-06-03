@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Chatroom } from "@/types";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
 
+
 interface ChatlistProps {
   chatrooms: Chatroom[];
 }

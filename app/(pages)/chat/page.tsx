@@ -6,6 +6,7 @@ import { getPool } from "@/lib/server/database";
 import { getUser } from "@/utils/getUser";
 import { createChat } from "@/helpers/createChat";
 
+
 export default async function ChatPage() {
   const user = await getUser();
 
@@ -17,6 +18,7 @@ export default async function ChatPage() {
   return (
     <div>
       <NavTab />
+      
       <Chatlist chatrooms={chatrooms} />
       <Userlist user={user} users={users} createChat={createChat} />
     </div>
