@@ -4,15 +4,36 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import AddFriend from "@/app/(pages)/friendTabs/AddFriend";
+import Pending from "@/app/(pages)/friendTabs/Pending";
+import { on } from "events";
+
+const dummyRequests = [
+  { id: 1, email: "example1@mail.com" },
+  { id: 2, email: "example2@mail.com" },
+];
 
 export default function NavTab() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
+  const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openAddFriendModal = () => setIsAddFriendModalOpen(true);
+  const closeAddfriendModal = () => setIsAddFriendModalOpen(false);
+
+  const openPendingModal = () => setIsPendingModalOpen(true);
+  const closePendingModal = () => setIsPendingModalOpen(false);
+
+  const handleAccept = (id: number) => {
+    console.log(`Accepted request with id: ${id}`);
+    //Accept logic ↓↓
+  };
+
+  const handleReject = (id: number) => {
+    console.log(`Rejected request with id: ${id}`);
+    // Reject logic ↓↓
+  };
 
   return (
     <nav className="bg-base-200 w-full p-4 flex justify-end items-center shadow-lg">
@@ -34,18 +55,15 @@ export default function NavTab() {
           All
         </span>
       </Link>
-      <Link href={`/?search=pending`} passHref>
-        <span
-          className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-            search === "pending" && "bg-green-400"
-          }`}
-        >
-          Pending
-        </span>
-      </Link>
       <button
-        onClick={openModal}
-        className="p-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+        onClick={openPendingModal}
+        className="p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
+      >
+        Pending
+      </button>
+      <button
+        onClick={openAddFriendModal}
+        className="p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
       >
         Add Friend
       </button>
@@ -60,7 +78,14 @@ export default function NavTab() {
           />
         </span>
       </Link>
-      <AddFriend isOpen={isModalOpen} onClose={closeModal} />
+      <AddFriend isOpen={isAddFriendModalOpen} onClose={closeAddfriendModal} />
+      <Pending
+        isOpen={isPendingModalOpen}
+        onClose={closePendingModal}
+        requests={dummyRequests}
+        onAccept={handleAccept}
+        onReject={handleReject}
+      />
     </nav>
   );
 }
