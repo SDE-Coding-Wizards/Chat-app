@@ -1,4 +1,6 @@
-import { jwtVerify } from "jose";
+"use server";
+
+import { decodeJwt } from "jose";
 import { cookies } from "next/headers";
 
 export async function getUser(): Promise<user | null> {
@@ -14,7 +16,7 @@ export async function getUser(): Promise<user | null> {
   let decodedToken: user | any | null = null;
 
   try {
-    decodedToken = await jwtVerify(token, secret);
+    decodedToken = { payload: decodeJwt(token) };
   } catch (error) {
     console.error("error", error);
 

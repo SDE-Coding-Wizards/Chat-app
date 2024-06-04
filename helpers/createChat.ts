@@ -1,3 +1,5 @@
+"use server";
+
 import { encryptKey, generateKey } from "../utils/key";
 
 export type createChatParams = (

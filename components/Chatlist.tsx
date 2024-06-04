@@ -4,22 +4,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
 import { getChatrooms } from "../app/(pages)/chat/[uuid]/functions/getChatrooms";
-import { auth } from "@/firebase";
+import { createChat, getUser } from "@/helpers";
 
 export default function Chatlist() {
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [users, setUsers] = useState("");
+  const [users, setUsers] = useState<user[]>([]);
   const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
-  const [user, setUser] = useState<user | null | any>(null);
 
-  auth.onAuthStateChanged(setUser as any);
-
-  useEffect(() => {
+  async function fetchChatrooms() {
+    const user = await getUser();
     if (!user) return;
 
-    getChatrooms(user.uid).then(setChatrooms);
-  }, [user]);
+    const chatrooms = await getChatrooms(user.uuid);
+
+    setChatrooms(chatrooms);
+  }
+
+  useEffect(() => {
+    fetchChatrooms();
+  }, []);
 
   const openCreateGroupModal = () => {
     setCreateGroupModalOpen(true);
@@ -28,13 +32,14 @@ export default function Chatlist() {
   const closeCreateGroupModal = () => {
     setCreateGroupModalOpen(false);
     setGroupName("");
-    setUsers("");
+    setUsers([]);
   };
 
-  const handleCreateGroup = () => {
-    // Handle the creation of the group here (e.g., call an API)
-    console.log("Group Name:", groupName);
-    console.log("Users:", users);
+  const handleCreateGroup = async () => {
+    const user = await getUser()
+    if (!user) return;
+
+    await createChat(user, users, groupName);
 
     // Close the modal after creation
     closeCreateGroupModal();
@@ -82,8 +87,10 @@ export default function Chatlist() {
               <label className="block text-sm font-medium">Users</label>
               <input
                 type="text"
-                value={users}
-                onChange={(e) => setUsers(e.target.value)}
+                value={users.join(", ")}
+                onChange={(e) =>
+                  setUsers([...users, e.target.value as unknown as user])
+                }
                 placeholder="Enter users"
                 className="mt-1 block w-full px-3 py-2  rounded-md shadow-sm focus:outline-none sm:text-sm"
               />
