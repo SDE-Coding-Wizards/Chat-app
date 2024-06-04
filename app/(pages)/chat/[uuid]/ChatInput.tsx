@@ -9,6 +9,7 @@ import { useWebsocket } from "@/hooks";
 import { ContentType } from "@/types/content";
 import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import MemberList from "@/components/memberList";
 
 interface ClientProps {
   chatroom_uuid: chatroom["uuid"];
@@ -108,6 +109,7 @@ export default function Client({
           <button type="submit">Send</button>
         </form>
       </section>
+      <MemberList />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Sign_in_up from "@/components/Sign-up-in";
 import { signInWithEmailAndPassword as signin } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/firebase";
+import { setCookie } from "@/helpers/setCookie";
 
 export default function login() {
   const router = useRouter();
@@ -31,6 +32,8 @@ export default function login() {
     });
 
     console.log(user);
+    const user2 = user.user as any;
+    setCookie("token", user2.accessToken);
 
     // localStorage.setItem("privateKey", privateKey);
   }
