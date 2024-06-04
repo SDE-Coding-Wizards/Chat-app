@@ -1,20 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Chatroom } from "@/types";
-import Modal from "@/components/CreateGroupModal";
+import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
+import { getChatrooms } from "../app/(pages)/chat/[uuid]/functions/getChatrooms";
+import { createChat, getUser } from "@/helpers";
 
-
-interface ChatlistProps {
-  chatrooms: Chatroom[];
-}
-
-export default function Chatlist({ chatrooms }: ChatlistProps) {
+export default function Chatlist() {
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [users, setUsers] = useState("");
+  const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
+
+  async function fetchChatrooms() {
+    const user = await getUser();
+    if (!user) return;
+
+    const chatrooms = await getChatrooms(user.uuid);
+
+    setChatrooms(chatrooms);
+  }
+
+  useEffect(() => {
+    fetchChatrooms();
+  }, []);
 
   const openCreateGroupModal = () => {
     setCreateGroupModalOpen(true);
@@ -44,10 +54,10 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -90,11 +100,11 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
         )}
       </button>
       <aside
-        className={`w-64 bg-base-200 p-4 fixed top-0 left-0 h-full z-20 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } md:relative md:translate-x-0`}
+        className={`w-64 bg-base-200 p-4 fixed top-0 left-0 h-full z-20 transition-transform transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0`}
       >
         <div className="flex justify-between text-lg font-bold">
-
           <button onClick={openCreateGroupModal} className="mb-5">
             Create Group
           </button>
@@ -108,8 +118,8 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
               prefetch
             >
               {chatroom?.name ||
-                chatroom.users
-                  ?.map(({ firstname, email }) => firstname || email)
+                chatroom.chatroom_members
+                  ?.map(({ user: { firstname, email } }) => firstname || email)
                   .join(", ")}
             </Link>
           ))}
@@ -130,9 +140,7 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium">
-                  Users
-                </label>
+                <label className="block text-sm font-medium">Users</label>
                 <input
                   type="text"
                   value={users}
@@ -142,16 +150,10 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
                 />
               </div>
               <div className="flex justify-end">
-                <button
-                  onClick={closeCreateGroupModal}
-                  className="p-2 mr-2"
-                >
+                <button onClick={closeCreateGroupModal} className="p-2 mr-2">
                   Cancel
                 </button>
-                <button
-                  onClick={handleCreateGroup}
-                  className="p-2"
-                >
+                <button onClick={handleCreateGroup} className="p-2">
                   Create
                 </button>
               </div>

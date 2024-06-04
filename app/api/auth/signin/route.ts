@@ -1,7 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-// import { getClient } from "@/lib/server/database";
-import { getPool } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { JWTPayload, KeyLike, SignJWT } from "jose";
@@ -14,7 +12,7 @@ const schema = z.object({
   password: z.string({ message: "Invalid password." }),
 });
 
-export async function POST(req: Request, res: NextResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const json = await req.json();
 
   const result = schema.safeParse(json);
@@ -29,11 +27,8 @@ export async function POST(req: Request, res: NextResponse) {
   //find user in database
   let user: User | null = null;
 
-  const connection = await getPool();
   try {
-    [user] = await connection.query("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
+    [user] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
 
     if (!user) {
       return new Response("Invalid credentials", { status: 400 });
@@ -44,8 +39,6 @@ export async function POST(req: Request, res: NextResponse) {
       "An error occurred while checking if the user exists.",
       { status: 500 }
     );
-  } finally {
-    await connection.end();
   }
 
   //compare password

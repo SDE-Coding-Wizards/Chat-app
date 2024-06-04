@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { createChatParams } from "@/helpers/createChat";
 
 interface UserlistProps {
-  user: User;
-  users: User[];
+  user: user;
+  users: user[];
   createChat: createChatParams
 }
 

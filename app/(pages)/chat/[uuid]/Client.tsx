@@ -1,25 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { decryptMessage, encryptMessage } from "@/utils/symmetric";
-import { useChatKey } from "@/hooks/useChatKey";
+import { encryptMessage } from "@/utils/symmetric";
+import { getChatkey } from "@/helpers/getChatkey";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
-import { useWebsocket } from "@/hooks/useWebsocket";
+import { useWebsocket } from "@/hooks";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
+import { ContentType } from "@/types/content";
+import { auth } from "@/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import MemberList from "@/components/memberList";
 
 interface ClientProps {
-  chatroom_uuid: Chatroom["uuid"];
-  user: User;
+  chatroom_uuid: chatroom["uuid"];
+  user: user;
   sendMessage: (
     uuid: string,
-    message: Message,
-    chatroom_uuid: Chatroom["uuid"],
-    author_uuid: User["uuid"]
-  ) => Promise<Message>;
-  initialMessages: Message[];
-  initialChatrooms: Chatroom[];
+    message: message,
+    chatroom_uuid: chatroom["uuid"],
+    author_uuid: user["uuid"]
+  ) => Promise<message>;
+  initialMessages: message[];
+  initialChatrooms: chatroom[];
   encryptedChatKey: string;
 }
 
@@ -31,15 +34,22 @@ export default function Client({
   initialChatrooms,
   encryptedChatKey,
 }: ClientProps) {
+  const chatKey = getChatkey(encryptedChatKey, user);
+
+  const [user2, setUser2] = useState<user | null>(null);
+  onAuthStateChanged(auth, setUser2 as any);
+
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
-  const [chatrooms, setChatrooms] = useState<Chatroom[]>(initialChatrooms);
-  const [socket, connected] = useWebsocket("/chat", {
+  const [chatrooms, setChatrooms] = useState<chatroom[]>(initialChatrooms);
+  const [chatSocket, connected] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
   });
-
-  const chatKey = useChatKey(encryptedChatKey, user);
+  const [roomsSocket] = useWebsocket("/chatrooms", {
+    events: { "receive-room": setChatrooms },
+    room: user.uuid,
+  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,12 +70,13 @@ export default function Client({
       ...messages,
       {
         uuid,
+        author_uuid: user.uuid,
         content: { content, content_type_id: contentTypeId },
         isLoading: true,
       } as MessageWithLoading,
     ]);
 
-    const encryptedMessage = encryptMessage(content, chatKey) as Message;
+    const encryptedMessage = encryptMessage(content, chatKey) as message;
 
     const newMessage = await sendMessage(
       uuid,
@@ -74,10 +85,10 @@ export default function Client({
       user.uuid
     );
 
-    socket.emit("send-message", newMessage);
+    chatSocket.emit("send-message", newMessage);
   }
 
-  function updateList(newMessage: Message) {
+  function updateList(newMessage: message) {
     setMessages((prev) => {
       let newList = [...prev];
 
@@ -90,15 +101,19 @@ export default function Client({
 
   return (
     <div className="flex bg-base-100 h-full">
-      <Chatlist chatrooms={chatrooms} />
-      
+      <Chatlist />
       <section className="flex flex-col w-full h-full p-4 gap-4">
       
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
+          {!connected && (
+            <div className="flex w-full justify-center">
+              <p className="fixed">Websocket not connected...</p>
+            </div>
+          )}
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer
-                data={messages}
+                data={messages as TextMessage[]}
                 chatKey={chatKey}
                 currentUser={user}
               />

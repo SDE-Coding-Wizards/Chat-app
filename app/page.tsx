@@ -7,7 +7,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="flex flex-col w-full h-full items-center justify-center gap-4 bg-base-200 p-6">
+    <div className="flex flex-col w-full h-full items-center justify-center gap-4 p-6">
       <div className="text-center mb-4">
         <img src="/chatlogo.webp" alt="Chat App Logo" className="w-24 mx-auto mb-2 rounded-full" />
         <h1 className="text-2xl font-bold">Welcome to ChatWizards!</h1>

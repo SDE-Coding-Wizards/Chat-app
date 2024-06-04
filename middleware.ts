@@ -1,35 +1,32 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
-import { User } from "./types/user";
-import { getClient } from "./lib/server/database";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "secret");
 if (!JWT_SECRET) {
   throw new Error("The environment variable JWT_SECRET is not set.");
 }
 
-export async function middleware(request: NextRequest & { user?: User }) {
+export async function middleware(request: NextRequest & { user?: user }) {
+  if (process.env.NODE_ENV !== "production") return NextResponse.next();
   // Get JWT token
   const token = request.cookies.get("token")?.value;
   if (!token) {
     // If no token, redirect to login or handle unauthenticated request
-    return new NextResponse("Unauthorized", { status: 401 });
+    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
   }
-  const SECRETKEY = process.env.JWT_SECRET_KEY as string;
-  const secret = new TextEncoder().encode(SECRETKEY);
+
   try {
     // Verify the token
-
-    const { payload } = await jwtVerify(token, secret);
-    const decodedUser = payload as unknown as User | null;
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const decodedUser = payload as unknown as user | null;
 
     if (!decodedUser) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
     }
 
     // If token is valid, you can set user info in headers or modify request
-    const user = decodedUser as User;
+    const user = decodedUser as user;
 
     request.user = user;
 
@@ -39,7 +36,9 @@ export async function middleware(request: NextRequest & { user?: User }) {
     console.error("🚀 ~ middleware ~ err:", err);
     // If token verification fails, return error or handle error and delete token
     request.cookies.delete("token");
-    return new NextResponse("Unauthorized", { status: 401 });
+
+    return NextResponse.redirect(new URL("/login", request.nextUrl.origin));
+    // return new NextResponse("Unauthorized", { status: 401 });
   }
 }
 

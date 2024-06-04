@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-// import { getClient } from "@/lib/server/database";
-import { getPool } from "@/lib/server/database";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -28,7 +26,7 @@ export async function POST(req: Request, res: NextResponse) {
 
   //find user in database
   let users: User[] | null = null;
-  const connection = await getPool();
+  const connection = await pool.getConnection();
   try {
     const [rows] = (await connection.execute(
       "SELECT * FROM users WHERE uuid = ?",

@@ -1,10 +1,9 @@
-import { getPool } from "@/lib/server/database";
-import { Chatroom, ChatroomMember, User } from "@/types";
+"use server";
 
-export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
-  const conn = await getPool();
+export async function getChatrooms(user_uuid: string): Promise<chatroom[]> {
+  const conn = await pool.getConnection();
 
-  const chatrooms: Chatroom[] = await conn.query(
+  const chatrooms: chatroom[] = await conn.query(
     `
     SELECT c.* FROM chatrooms c
     JOIN chatroom_members crm
@@ -15,7 +14,7 @@ export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
   );
 
   const chatroomUUIDs = chatrooms.map(({ uuid }) => uuid);
-  let chatroomMembers: ChatroomMember[] = [];
+  let chatroomMembers: chatroom_member[] = [];
 
   if (chatroomUUIDs.length > 0) {
     chatroomMembers = await conn.query(
@@ -24,19 +23,19 @@ export async function getChatrooms(user_uuid: string): Promise<Chatroom[]> {
     );
   }
 
-  const users = await conn.query("SELECT * FROM users");
-
   for (let chatroom of chatrooms) {
-    chatroom.members = chatroomMembers.filter(
-      (member: ChatroomMember) => member.chatroom_uuid === chatroom.uuid
-    );
-
-    chatroom.users = chatroom.members!.map((member: ChatroomMember) =>
-      users.find((user: User) => user.uuid === member.user_uuid)
+    chatroom.chatroom_members = chatroomMembers.filter(
+      (member: chatroom_member) => member.chatroom_uuid === chatroom.uuid
     );
   }
 
-  await conn.release();
+  const users: user[] = await conn.query("SELECT * FROM users");
+
+  for (let member of chatroomMembers) {
+    member.user = users.find(({ uuid }) => uuid === member.user_uuid)!;
+  }
+
+  await conn.end();
 
   return chatrooms;
 }

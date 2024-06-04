@@ -38,3 +38,22 @@ export function decryptMessage(
   decrypted += decipher.final("utf-8");
   return decrypted;
 }
+
+export function decryptMessages(messages: message[], chatKey: string) {
+  try {
+    let decryptedMessages = [...messages];
+
+    for (let message of decryptedMessages) {
+      message.content.content = decryptMessage(
+        message.content.content,
+        chatKey,
+        message.iv
+      );
+    }
+
+    return decryptedMessages;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
