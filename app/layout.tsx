@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Navbar, Footer } from "@/components";
 import { Toaster } from "react-hot-toast";
+import "@/lib/server/database";
 import "./globals.css";
 
 export const metadata: Metadata = {

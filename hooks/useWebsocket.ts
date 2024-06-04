@@ -10,7 +10,6 @@ interface WebsocketOptions {
   room: string;
 }
 
-
 const WS_SERVER = process.env.NEXT_PUBLIC_WS_SERVER || "http://localhost";
 const WS_PORT = process.env.NEXT_PUBLIC_WS_PORT || 5000;
 

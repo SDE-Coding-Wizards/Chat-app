@@ -1,4 +1,3 @@
-import { Message } from "../types";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import dotenv from "dotenv";
@@ -20,12 +19,12 @@ chat.on("connection", async (socket: Socket) => {
     socket.join(chatroom_uuid);
   });
 
-  socket.on("send-message", (message: Message) => {
+  socket.on("send-message", (message: any /* message */) => {
     chat.to(message.chatroom_uuid).emit("receive-message", message);
   });
 });
 
-const PORT = process.env.WS_PORT || 5000;
+const PORT = process.env.NEXT_PUBLIC_WS_PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log("Server listening on port", PORT);
