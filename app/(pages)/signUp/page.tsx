@@ -15,15 +15,20 @@ export default function SignUp() {
 
     // const { content, iv } = encryptMessage(privateKey, key);
 
-    const { data: newUser } = await axios.post("/api/auth/signup", {
-      email,
-      password,
-      publicKey,
-      //! DONT DO THIS IN NORMALLY
-      privateKey,
-    });
+    const { data } = await axios
+      .post("/api/auth/signup", {
+        email,
+        password,
+        publicKey,
+        //! DONT DO THIS IN NORMALLY
+        privateKey,
+      })
+      .catch((error) => {
+        return error.response;
+      });
 
     localStorage.setItem("privateKey", privateKey);
+    return data;
   }
 
   return <Sign_in_up type="Sign up" handleSubmit={handleSignup} />;
