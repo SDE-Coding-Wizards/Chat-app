@@ -10,6 +10,7 @@ import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 import { ContentType } from "@/types/content";
 import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import MemberList from "@/components/memberList";
 
 interface ClientProps {
   chatroom_uuid: chatroom["uuid"];
@@ -102,6 +103,7 @@ export default function Client({
     <div className="flex bg-base-100 h-full">
       <Chatlist />
       <section className="flex flex-col w-full h-full p-4 gap-4">
+      
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
           {!connected && (
             <div className="flex w-full justify-center">
@@ -122,7 +124,6 @@ export default function Client({
 
           <MessagesEnd />
         </div>
-
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
           <input
             name="message_content"
@@ -134,6 +135,7 @@ export default function Client({
           <button type="submit">Send</button>
         </form>
       </section>
+      <MemberList/>
     </div>
   );
 }

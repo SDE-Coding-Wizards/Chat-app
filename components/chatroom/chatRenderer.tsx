@@ -17,7 +17,7 @@ export const ChatRenderer: React.FC<{
   imageHandler.setNext(gifHandler).setNext(textHandler).setNext(emojiHandler);
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1 w-full ">
       {data.map((message, index) => (
         <div key={index}>
           {imageHandler.handle({

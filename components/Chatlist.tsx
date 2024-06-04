@@ -8,6 +8,7 @@ import { createChat, getUser } from "@/helpers";
 
 export default function Chatlist() {
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [users, setUsers] = useState<user[]>([]);
   const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
@@ -41,25 +42,40 @@ export default function Chatlist() {
 
     await createChat(user, users, groupName);
 
-    // Close the modal after creation
     closeCreateGroupModal();
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <aside className="w-1/4 bg-base-200 p-4">
-      <div className="flex justify-between text-lg font-bold">
-        <h2 className="mb-4">Recent Chats</h2>
-        <button onClick={openCreateGroupModal} className="mb-5">
-          Create Group
-        </button>
-      </div>
-      <div className="flex flex-col gap-4">
-        {chatrooms.map((chatroom) => (
-          <Link
-            key={chatroom.uuid}
-            href={`/chat/${chatroom.uuid}`}
-            className="p-2 bg-base-300 rounded"
-            prefetch
+    <div className="relative">
+      <button
+        onClick={toggleSidebar}
+        className="md:hidden p-2 bg-base-200 fixed top-0 left-0 z-10"
+      >
+        {isSidebarOpen ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             {chatroom?.name ||
               chatroom.chatroom_members
@@ -103,9 +119,15 @@ export default function Chatlist() {
                 Create
               </button>
             </div>
-          </div>
-        </Modal>
+          </Modal>
+        )}
+      </aside>
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-10 md:hidden"
+          onClick={toggleSidebar}
+        ></div>
       )}
-    </aside>
+    </div>
   );
 }
