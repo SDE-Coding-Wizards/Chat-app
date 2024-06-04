@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Chatroom } from "@/types";
-import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
+import Modal from "@/components/CreateGroupModal";
 
 
 interface ChatlistProps {
@@ -27,15 +27,12 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
   };
 
   const handleCreateGroup = () => {
-    // Handle the creation of the group here (e.g., call an API)
     console.log("Group Name:", groupName);
     console.log("Users:", users);
 
-    // Close the modal after creation
     closeCreateGroupModal();
   };
 
-  // Toggle sidebar visibility on small screens
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
@@ -120,7 +117,7 @@ export default function Chatlist({ chatrooms }: ChatlistProps) {
         {isCreateGroupModalOpen && (
           <Modal onClose={closeCreateGroupModal}>
             <div className="p-4">
-              <h2 className="text-lg font-bold mb-4">Create Group</h2>
+              <h2 className="text-lg font-bold">Create Group</h2>
               <div className="mb-4">
                 <label className="block text-sm font-medium">
                   Group Name (optional)
