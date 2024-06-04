@@ -14,7 +14,7 @@ export default async function ChatPage() {
   return (
     <div>
       <NavTab />
-      <Chatlist chatrooms={chatrooms} />
+      <Chatlist />
       {/* <Userlist user={user} users={users} createChat={createChat} /> */}
     </div>
   );
