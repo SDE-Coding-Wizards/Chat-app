@@ -88,9 +88,13 @@ export default function Client({
   return (
     <div className="flex bg-base-100 h-full">
       <Chatlist chatrooms={chatrooms} />
-      <MemberList/>
+      
       <section className="flex flex-col w-full h-full p-4 gap-4">
+      
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
+        
+        
+        
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer
@@ -105,7 +109,6 @@ export default function Client({
 
           <MessagesEnd />
         </div>
-
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
           <input
             name="message_content"
@@ -117,6 +120,7 @@ export default function Client({
           <button type="submit">Send</button>
         </form>
       </section>
+      <MemberList/>
     </div>
   );
 }
