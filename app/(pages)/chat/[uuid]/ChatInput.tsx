@@ -3,13 +3,11 @@
 import { useState } from "react";
 import { encryptMessage } from "@/utils/symmetric";
 import { getChatkey } from "@/helpers/getChatkey";
-import { Chatlist } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks";
 import { ContentType } from "@/types/content";
 import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import MemberList from "@/components/memberList";
 
 interface ClientProps {
   chatroom_uuid: chatroom["uuid"];
@@ -95,21 +93,17 @@ export default function Client({
   }
 
   return (
-    <div className="flex bg-base-100 h-full">
-      <Chatlist />
-      <section className="flex flex-col w-full h-full p-4 gap-4">
-        <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
-          <input
-            name="message_content"
-            autoComplete="off"
-            type="text"
-            placeholder="Type a message"
-            className="input input-bordered w-full"
-          />
-          <button type="submit">Send</button>
-        </form>
-      </section>
-      <MemberList />
-    </div>
+    <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
+      <input
+        name="message_content"
+        autoComplete="off"
+        type="text"
+        placeholder="Type a message"
+        className="input input-bordered w-full"
+      />
+      <button type="submit" disabled={!connected}>
+        Send
+      </button>
+    </form>
   );
 }

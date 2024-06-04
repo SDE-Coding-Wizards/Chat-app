@@ -1,4 +1,3 @@
-import Chatroom from "./Chatroom";
 import { getUser } from "@/helpers/getUser";
 import { notFound } from "next/navigation";
 import {
@@ -7,6 +6,10 @@ import {
   getMessages,
   sendMessage,
 } from "./functions";
+import ChatViewer from "./ChatViewer";
+import ChatInput from "./ChatInput";
+import { Chatlist } from "@/components";
+import MemberList from "@/components/memberList";
 
 interface ChatProps {
   params: { uuid: UUID };
@@ -24,13 +27,22 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
   if (!encryptedChatKey) return notFound();
 
   return (
-    <Chatroom
-      chatroom_uuid={uuid}
-      user={user}
-      sendMessage={sendMessage}
-      initialMessages={messages}
-      initialChatrooms={chatrooms}
-      encryptedChatKey={encryptedChatKey}
-    />
+    <div className="flex bg-base-100 h-full">
+      <Chatlist />
+
+      <section className="flex flex-col w-full h-full p-4 gap-4">
+        <ChatViewer chatKey={encryptedChatKey} messages={messages} user={user} />
+        <ChatInput
+          chatroom_uuid={uuid}
+          user={user}
+          sendMessage={sendMessage}
+          initialChatrooms={chatrooms}
+          initialMessages={messages}
+          encryptedChatKey={encryptedChatKey}
+        />
+      </section>
+
+      <MemberList />
+    </div>
   );
 }
