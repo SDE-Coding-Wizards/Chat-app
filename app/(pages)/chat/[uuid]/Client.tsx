@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { decryptMessage, encryptMessage } from "@/utils/symmetric";
 import { useChatKey } from "@/hooks/useChatKey";
-import { Message, MessageWithLoading, Chatroom, User } from "@/types";
 import { Chatlist, MessagesEnd } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import { ChatRenderer } from "@/components/chatroom/chatRenderer";
-import { ContentType } from "@/types/content";
+import MemberList from "@/components/memberList";
 
 interface ClientProps {
   chatroom_uuid: Chatroom["uuid"];
@@ -92,11 +91,10 @@ export default function Client({
   return (
     <div className="flex bg-base-100 h-full">
       <Chatlist chatrooms={chatrooms} />
+      
       <section className="flex flex-col w-full h-full p-4 gap-4">
+      
         <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
-          {!connected && (
-            <div className="mx-auto">Websocket not connected...</div>
-          )}
           {chatKey ? (
             <div className="flex flex-col gap-4">
               <ChatRenderer
@@ -111,7 +109,6 @@ export default function Client({
 
           <MessagesEnd />
         </div>
-
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
           <input
             name="message_content"
@@ -123,6 +120,7 @@ export default function Client({
           <button type="submit">Send</button>
         </form>
       </section>
+      <MemberList/>
     </div>
   );
 }

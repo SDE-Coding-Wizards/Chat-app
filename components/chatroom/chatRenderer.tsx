@@ -4,6 +4,7 @@ import { GifHandler } from "./handlers/gifHandler";
 import { ImageHandler } from "./handlers/imageHandler";
 import { TextHandler } from "./handlers/textHandler";
 import { isCurrentUser } from "@/utils/chatBubblePossitioner";
+
 export const ChatRenderer: React.FC<{
   data: Message[];
   chatKey: string;
@@ -17,7 +18,7 @@ export const ChatRenderer: React.FC<{
   imageHandler.setNext(gifHandler).setNext(textHandler).setNext(emojiHandler);
 
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col gap-1 w-full ">
       {data.map((message, index) => (
         <div key={index}>
           {imageHandler.handle({
