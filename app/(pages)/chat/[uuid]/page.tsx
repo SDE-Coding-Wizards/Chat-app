@@ -1,4 +1,4 @@
-import Client from "./Client";
+import Chatroom from "./Chatroom";
 import { getUser } from "@/helpers/getUser";
 import { notFound } from "next/navigation";
 import {
@@ -24,7 +24,7 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
   if (!encryptedChatKey) return notFound();
 
   return (
-    <Client
+    <Chatroom
       chatroom_uuid={uuid}
       user={user}
       sendMessage={sendMessage}

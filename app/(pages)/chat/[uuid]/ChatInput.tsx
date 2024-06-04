@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { encryptMessage } from "@/utils/symmetric";
 import { getChatkey } from "@/helpers/getChatkey";
-import { Chatlist, MessagesEnd } from "@/components";
+import { Chatlist } from "@/components";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks";
-import { ChatRenderer } from "@/components/chatroom/chatRenderer";
 import { ContentType } from "@/types/content";
 import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -44,10 +43,6 @@ export default function Client({
   const [chatSocket, connected] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
-  });
-  const [roomsSocket] = useWebsocket("/chatrooms", {
-    events: { "receive-room": setChatrooms },
-    room: user.uuid,
   });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -102,27 +97,6 @@ export default function Client({
     <div className="flex bg-base-100 h-full">
       <Chatlist />
       <section className="flex flex-col w-full h-full p-4 gap-4">
-        <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">
-          {!connected && (
-            <div className="flex w-full justify-center">
-              <p className="fixed">Websocket not connected...</p>
-            </div>
-          )}
-          {chatKey ? (
-            <div className="flex flex-col gap-4">
-              <ChatRenderer
-                data={messages as TextMessage[]}
-                chatKey={chatKey}
-                currentUser={user}
-              />
-            </div>
-          ) : (
-            <div className="mx-auto">Loading...</div>
-          )}
-
-          <MessagesEnd />
-        </div>
-
         <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
           <input
             name="message_content"
