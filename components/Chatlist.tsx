@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
-import { getChatrooms } from "../app/(pages)/chat/[uuid]/functions/getChatrooms";
+import { getChatrooms } from "@/functions/getChatrooms";
 import { createChat, getUser } from "@/helpers";
 import { X } from "lucide-react";
 

@@ -1,23 +1,65 @@
 import { useState } from "react";
 import { KeyRound, Mail } from "lucide-react";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { setCookie } from "@/helpers/setCookie";
+
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
+  UserCredential,
+  User,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { auth } from "@/firebase";
+import { getUsers, createUser } from "@/functions";
+import { generateKeys } from "@/utils/keyPair";
+import { useRouter } from "next/navigation";
 
 interface SignInUpProps {
   type: "Sign in" | "Sign up";
-  handleSubmit: (email: string, password: string) => Promise<any>;
+  handleSubmit: (
+    email: string,
+    password: string,
+    userCred?: UserCredential
+  ) => Promise<any>;
 }
 
 export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const provider = new GoogleAuthProvider();
+  const router = useRouter();
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) router.push("/chat");
+  });
 
   async function handleGoogleSignIn() {
+    const provider = new GoogleAuthProvider();
+
     const userCredential = await signInWithPopup(auth, provider);
 
-    console.log(userCredential);
+    const user = userCredential.user as User & { accessToken: string };
+
+    setCookie("token", user.accessToken);
+
+    const [findUser] = await getUsers({ filter: { email: user.email } });
+
+    if (findUser) return;
+
+    const { privateKey, publicKey } = await generateKeys();
+
+    const userInfo = getAdditionalUserInfo(userCredential)!;
+
+    createUser({
+      uuid: user.uid as UUID,
+      email: user.email!,
+      firstname: userInfo.profile?.given_name,
+      lastname: userInfo.profile?.family_name,
+      image_path: userInfo.profile?.picture,
+      private_key: privateKey,
+      public_key: publicKey,
+    } as user);
   }
 
   return (
@@ -25,6 +67,7 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
       className="full-center"
       onSubmit={async (e) => {
         e.preventDefault();
+        if (!email || !password) return;
         await handleSubmit(email, password);
       }}
     >

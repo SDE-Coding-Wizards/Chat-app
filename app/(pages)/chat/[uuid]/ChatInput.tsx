@@ -6,8 +6,6 @@ import { getChatkey } from "@/helpers/getChatkey";
 import { v4 as uuidv4 } from "uuid";
 import { useWebsocket } from "@/hooks";
 import { ContentType } from "@/types/content";
-import { auth } from "@/firebase";
-import { onAuthStateChanged } from "firebase/auth";
 
 interface ClientProps {
   chatroom_uuid: chatroom["uuid"];
@@ -19,7 +17,6 @@ interface ClientProps {
     author_uuid: user["uuid"]
   ) => Promise<message>;
   initialMessages: message[];
-  initialChatrooms: chatroom[];
   encryptedChatKey: string;
 }
 
@@ -28,17 +25,12 @@ export default function Client({
   user,
   sendMessage,
   initialMessages,
-  initialChatrooms,
   encryptedChatKey,
 }: ClientProps) {
   const chatKey = getChatkey(encryptedChatKey, user);
 
-  const [user2, setUser2] = useState<user | null>(null);
-  onAuthStateChanged(auth, setUser2 as any);
-
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
-  const [chatrooms, setChatrooms] = useState<chatroom[]>(initialChatrooms);
   const [chatSocket, connected] = useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
@@ -101,7 +93,7 @@ export default function Client({
         placeholder="Type a message"
         className="input input-bordered w-full"
       />
-      <button type="submit" disabled={!connected}>
+      <button type="submit">
         Send
       </button>
     </form>
