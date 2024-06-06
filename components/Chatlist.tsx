@@ -165,19 +165,23 @@ export default function Chatlist({ initialChatrooms = [] }: ChatlistProps) {
                 <div className="label">
                   <span className="label-text">Users</span>
                 </div>
-                <Select
-                  className="bg-base-200"
-                  isMulti={true}
-                  options={allUsers
-                    .filter(({ uuid }) => uuid !== user?.uuid)
-                    .map((user) => {
-                      return {
-                        value: user.uuid,
-                        label: user.firstname,
-                      };
-                    })}
-                  onChange={setSelectedUsers}
-                />
+
+                {user && (
+                  <Select
+                    instanceId={user.uuid}
+                    className="bg-base-200"
+                    isMulti={true}
+                    options={allUsers
+                      .filter(({ uuid }) => uuid !== user?.uuid)
+                      .map((user) => {
+                        return {
+                          value: user.uuid,
+                          label: user.firstname,
+                        };
+                      })}
+                    onChange={setSelectedUsers}
+                  />
+                )}
               </label>
 
               <div className="flex w-full justify-end gap-5 p-5">

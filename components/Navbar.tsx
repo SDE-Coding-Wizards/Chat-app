@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import ThemeController from "./ThemeController";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import AddFriend from "@/app/(pages)/friendTabs/AddFriend";
 import ProfilePic from "./ProfilePic";
-import Online from "@/app/(pages)/friendTabs/Online";
 
-export default function Navbar() {
+interface NavbarProps {
+  user: user;
+}
+
+export default function Navbar({ user }: NavbarProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
   const router = useRouter();
@@ -62,7 +64,7 @@ export default function Navbar() {
           </button>
           <Link href="/profileSettings" passHref>
             <span>
-              <ProfilePic />
+              <ProfilePic initialUser={user} />
             </span>
           </Link>
           <AddFriend

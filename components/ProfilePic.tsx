@@ -18,12 +18,14 @@ export default function ProfilePic({ initialUser = null }: ProfilePicProps) {
   }, []);
 
   return (
-    <Image
-      className="rounded-3xl mx-2"
-      src={user?.image_path || "/default.webp"}
-      alt="Profile Picture"
-      width={50}
-      height={50}
-    />
+    <div>
+      <Image
+        className="rounded-3xl mx-2"
+        src={user?.image_path || "/default.webp"}
+        alt="Profile Picture"
+        width={50}
+        height={50}
+      />
+    </div>
   );
 }
