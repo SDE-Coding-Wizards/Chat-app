@@ -32,7 +32,6 @@ export default function Client({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
   const [chatSocket, connected] = useWebsocket("/chat", {
-    events: { "receive-message": updateList },
     room: chatroom_uuid,
   });
 
@@ -73,17 +72,6 @@ export default function Client({
     chatSocket.emit("send-message", newMessage);
   }
 
-  function updateList(newMessage: message) {
-    setMessages((prev) => {
-      let newList = [...prev];
-
-      newList = newList.filter(({ uuid }) => uuid != newMessage.uuid);
-      newList.push(newMessage);
-
-      return newList;
-    });
-  }
-
   return (
     <form className="flex flex-col gap-2 mt-auto" onSubmit={handleSubmit}>
       <input
@@ -93,9 +81,7 @@ export default function Client({
         placeholder="Type a message"
         className="input input-bordered w-full"
       />
-      <button type="submit">
-        Send
-      </button>
+      <button type="submit">Send</button>
     </form>
   );
 }

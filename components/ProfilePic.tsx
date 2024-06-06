@@ -1,11 +1,19 @@
+"use client";
+
 import { getUser } from "@/helpers";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function ProfilePic() {
-  const [user, setUser] = useState<user | null>(null);
+interface ProfilePicProps {
+  initialUser?: user | null;
+}
+
+export default function ProfilePic({ initialUser = null }: ProfilePicProps) {
+  const [user, setUser] = useState<user | null>(initialUser);
 
   useEffect(() => {
+    if (user) return;
+
     getUser().then(setUser);
   }, []);
 

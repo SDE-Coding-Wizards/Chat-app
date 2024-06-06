@@ -4,8 +4,6 @@ import { decodeJwt } from "jose";
 import { cookies } from "next/headers";
 
 export async function getUser(): Promise<user | null> {
-  "use server";
-
   const token = cookies().get("token")?.value;
   const SECRETKEY = process.env.JWT_SECRET_KEY as string;
 
