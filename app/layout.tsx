@@ -3,17 +3,22 @@ import { Navbar, Footer } from "@/components";
 import { Toaster } from "react-hot-toast";
 import "@/lib/server/database";
 import "./globals.css";
+import { getUser } from "@/helpers";
 
 export const metadata: Metadata = {
   title: "Chat Wizards",
   description: "Chat App by SDE Code Wizards",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getUser();
+
+  if (!user) return null;
+
   return (
     <html lang="en" data-theme="luxury">
       <head>
@@ -28,7 +33,7 @@ export default function RootLayout({
           position="top-right"
           reverseOrder={true}
         />
-        <Navbar />
+        <Navbar user={user} />
         <main>{children}</main>
         <Footer />
       </body>

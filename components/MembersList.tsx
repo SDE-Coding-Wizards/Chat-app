@@ -24,13 +24,14 @@ export default function MembersList({ members }: MembersListProps) {
         <Usericon size={24} />
       </button>
       <div
-        className={`w-64 max-h-64 shadow-md ${sidebarOpen ? " right-0" : "hidden"
-          }`}
+        className={`w-64 max-h-64 shadow-md ${
+          sidebarOpen ? " right-0" : "hidden"
+        }`}
       >
         <div className="text-base font-semibold">
           {members.map((member) => (
-            <div className="flex">
-              <ProfilePic />
+            <div className="flex" key={member.uuid}>
+              <ProfilePic initialUser={member.user} />
               <button className="border-b border-gray-300 block p-4 hover:bg-base-200">
                 {member.user.firstname}
               </button>
