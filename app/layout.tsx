@@ -5,7 +5,7 @@ import "@/lib/server/database";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chat App",
+  title: "Chat Wizards",
   description: "Chat App by SDE Code Wizards",
 };
 
