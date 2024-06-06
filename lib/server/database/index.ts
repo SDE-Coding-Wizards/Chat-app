@@ -7,11 +7,6 @@ declare global {
 
 const options = mariadb.defaultOptions(DATABASE_URL);
 
-export const pool =
-  globalThis.pool ||
-  mariadb.createPool({
-    ...options,
-    connectionLimit: 3,
-  });
+export const pool = globalThis.pool || mariadb.createPool(options);
 
 if (process.env.NODE_ENV !== "production") globalThis.pool = pool;

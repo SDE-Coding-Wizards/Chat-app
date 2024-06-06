@@ -1,11 +1,11 @@
+"use server"
+
 export async function sendMessage(
   uuid: string,
   message: message,
   chatroom_uuid: string,
   author_uuid: string
 ): Promise<message> {
-  "use server";
-  
   const conn = await pool.getConnection();
 
   conn.beginTransaction();
