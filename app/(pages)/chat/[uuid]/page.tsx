@@ -32,12 +32,13 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
 
   return (
     <div className="flex bg-base-100 h-full">
-      <Chatlist />
+      <Chatlist initialChatrooms={chatrooms} />
 
       <section className="flex flex-col w-full h-full p-4 gap-4">
         <ChatViewer
+          chatroom_uuid={uuid}
           chatKey={encryptedChatKey}
-          messages={messages}
+          initialMessages={messages}
           user={user}
         />
 

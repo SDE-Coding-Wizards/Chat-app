@@ -6,7 +6,7 @@ interface WebsocketEvents {
 }
 
 interface WebsocketOptions {
-  events: WebsocketEvents;
+  events?: WebsocketEvents;
   room: string;
 }
 

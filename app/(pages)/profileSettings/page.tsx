@@ -3,6 +3,9 @@
 import ProfilePic from "@/components/ProfilePic";
 import { getUser } from "@/helpers";
 import { useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase";
+import { setCookie } from "@/helpers/setCookie";
 
 export default function ProfileSettings() {
   const [user, setUser] = useState<user | null>(null);
@@ -10,6 +13,11 @@ export default function ProfileSettings() {
   useEffect(() => {
     getUser().then(setUser);
   }, []);
+
+  async function handleSignOut() {
+    await signOut(auth);
+    await setCookie("token", "");
+  }
 
   return (
     <div className="flex justify-center items-center">
@@ -55,7 +63,7 @@ export default function ProfileSettings() {
           />
         </div>
         <button className="btn mt-7 w-64">Save & Update</button>
-        <button className="btn btn-neutral mt-3 w-64">Sign Out</button>
+        <button onClick={handleSignOut} className="btn btn-neutral mt-3 w-64">Sign Out</button>
       </div>
     </div>
   );

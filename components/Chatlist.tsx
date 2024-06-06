@@ -2,18 +2,21 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
-import { getChatrooms } from "@/functions/getChatrooms";
+import { getChatrooms, getUsers } from "@/functions";
 import { createChat, getUser } from "@/helpers";
 import { X } from "lucide-react";
+import Select from "react-select";
 
-export default function Chatlist() {
-  const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
+interface ChatlistProps {
+  initialChatrooms?: chatroom[];
+}
+
+export default function Chatlist({ initialChatrooms = [] }: ChatlistProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [users, setUsers] = useState("");
-  const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
+  const [chatrooms, setChatrooms] = useState<chatroom[]>(initialChatrooms);
   const [user, setUser] = useState<user | null>(null);
+  const [allUsers, setAllUsers] = useState<user[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<any>([]);
 
   const createGroupRef = useRef<HTMLDialogElement>(null);
 
@@ -30,17 +33,12 @@ export default function Chatlist() {
 
   useEffect(() => {
     fetchChatrooms();
+
+    getUsers().then(setAllUsers);
   }, []);
 
   const openCreateGroupModal = () => {
-    setCreateGroupModalOpen(true);
     createGroupRef.current!.showModal();
-  };
-
-  const closeCreateGroupModal = () => {
-    setCreateGroupModalOpen(false);
-    setGroupName("");
-    setUsers("");
   };
 
   const handleCreateGroup = (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,9 +48,13 @@ export default function Chatlist() {
 
     const groupName = formData.get("group_name") as string;
 
-    createChat(user, [], groupName);
+    const users = selectedUsers.map(({ value }: any) =>
+      allUsers.find(({ uuid }) => uuid === value)
+    ) as user[];
 
-    closeCreateGroupModal();
+    createChat(user, users, groupName);
+
+    createGroupRef.current!.close();
   };
 
   const toggleSidebar = () => {
@@ -159,20 +161,28 @@ export default function Chatlist() {
                 />
               </label>
 
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control max-w-xs">
                 <div className="label">
                   <span className="label-text">Users</span>
                 </div>
-                <input
-                  name="users"
-                  type="text"
-                  placeholder="Enter users"
-                  className="input input-bordered w-full max-w-xs"
+                <Select
+                  className="bg-base-200"
+                  isMulti={true}
+                  options={allUsers
+                    .filter(({ uuid }) => uuid !== user?.uuid)
+                    .map((user) => {
+                      return {
+                        value: user.uuid,
+                        label: user.firstname,
+                      };
+                    })}
+                  onChange={setSelectedUsers}
                 />
               </label>
 
               <div className="flex w-full justify-end gap-5 p-5">
                 <button
+                  type="button"
                   className="btn btn-primary btn-sm btn-circle absolute top-4 right-4"
                   onClick={() => {
                     createGroupRef.current!.close();
@@ -181,18 +191,18 @@ export default function Chatlist() {
                   <X />
                 </button>
 
-                <button type="submit" className="btn btn-primary">
-                  Create
-                </button>
-
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-warning"
                   onClick={() => {
                     createGroupRef.current!.close();
                   }}
                 >
                   Cancel
+                </button>
+
+                <button type="submit" className="btn btn-success">
+                  Create
                 </button>
               </div>
             </form>
