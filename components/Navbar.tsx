@@ -46,7 +46,7 @@ export default function Navbar({ user }: NavbarProps) {
             Online
           </button>
           <button
-            onClick={() => handleTabChange("All")}
+            onClick={() => handleTabChange("all")}
             className={`btn btn-outline ${tab === "all" && " btn-success"}`}
           >
             All
