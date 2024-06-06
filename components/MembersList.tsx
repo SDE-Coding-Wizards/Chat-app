@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { User as Usericon } from "lucide-react";
+import ProfilePic from "./ProfilePic";
 
 interface MembersListProps {
   members: chatroom_member[];
@@ -29,9 +30,12 @@ export default function MembersList({ members }: MembersListProps) {
       >
         <div className="text-base font-semibold">
           {members.map((member) => (
-            <button className="border-b border-gray-300 block p-4 hover:bg-base-200">
-              {member.user.firstname}
-            </button>
+            <div className="flex">
+              <ProfilePic />
+              <button className="border-b border-gray-300 block p-4 hover:bg-base-200">
+                {member.user.firstname}
+              </button>
+            </div>
           ))}
         </div>
       </div>
