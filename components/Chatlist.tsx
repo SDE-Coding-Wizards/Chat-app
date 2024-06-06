@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Modal from "@/components/CreateGroupModal"; // Adjust the import path if necessary
-import { getChatrooms } from "../app/(pages)/chat/[uuid]/functions/getChatrooms";
+import { getChatrooms } from "@/functions/getChatrooms";
 import { createChat, getUser } from "@/helpers";
+import { X } from "lucide-react";
 
 export default function Chatlist() {
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState(false);
@@ -12,12 +13,17 @@ export default function Chatlist() {
   const [groupName, setGroupName] = useState("");
   const [users, setUsers] = useState("");
   const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
+  const [user, setUser] = useState<user | null>(null);
+
+  const createGroupRef = useRef<HTMLDialogElement>(null);
 
   async function fetchChatrooms() {
-    const user = await getUser();
-    if (!user) return;
+    const fetchUser = await getUser();
+    if (!fetchUser) return;
 
-    const chatrooms = await getChatrooms(user.uuid);
+    setUser(fetchUser);
+
+    const chatrooms = await getChatrooms(fetchUser.uuid);
 
     setChatrooms(chatrooms);
   }
@@ -28,6 +34,7 @@ export default function Chatlist() {
 
   const openCreateGroupModal = () => {
     setCreateGroupModalOpen(true);
+    createGroupRef.current!.showModal();
   };
 
   const closeCreateGroupModal = () => {
@@ -36,9 +43,14 @@ export default function Chatlist() {
     setUsers("");
   };
 
-  const handleCreateGroup = () => {
-    console.log("Group Name:", groupName);
-    console.log("Users:", users);
+  const handleCreateGroup = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!user) return;
+
+    const formData = new FormData(e.currentTarget);
+
+    const groupName = formData.get("group_name") as string;
+
+    createChat(user, [], groupName);
 
     closeCreateGroupModal();
   };
@@ -124,42 +136,71 @@ export default function Chatlist() {
             </Link>
           ))}
         </div>
-        {isCreateGroupModalOpen && (
-          <Modal onClose={closeCreateGroupModal}>
-            <div className="p-4">
-              <h2 className="text-lg font-bold">Create Group</h2>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">
-                  Group Name (optional)
-                </label>
+        <dialog id="my_modal_2" className="modal" ref={createGroupRef}>
+          <div className="modal-box bg-base-200">
+            <h3 className="font-bold text-lg">Create Group</h3>
+
+            <form
+              className="flex flex-col gap-5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreateGroup(e);
+              }}
+            >
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text">Name</span>
+                </div>
                 <input
+                  name="group_name"
                   type="text"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none sm:text-sm"
+                  placeholder="Enter Group Name"
+                  className="input input-bordered w-full max-w-xs"
                 />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Users</label>
+              </label>
+
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text">Users</span>
+                </div>
                 <input
+                  name="users"
                   type="text"
-                  value={users}
-                  onChange={(e) => setUsers(e.target.value)}
                   placeholder="Enter users"
-                  className="mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none sm:text-sm"
+                  className="input input-bordered w-full max-w-xs"
                 />
-              </div>
-              <div className="flex justify-end">
-                <button onClick={closeCreateGroupModal} className="p-2 mr-2">
-                  Cancel
+              </label>
+
+              <div className="flex w-full justify-end gap-5 p-5">
+                <button
+                  className="btn btn-primary btn-sm btn-circle absolute top-4 right-4"
+                  onClick={() => {
+                    createGroupRef.current!.close();
+                  }}
+                >
+                  <X />
                 </button>
-                <button onClick={handleCreateGroup} className="p-2">
+
+                <button type="submit" className="btn btn-primary">
                   Create
                 </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    createGroupRef.current!.close();
+                  }}
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
-          </Modal>
-        )}
+            </form>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
       </aside>
       {isSidebarOpen && (
         <div
