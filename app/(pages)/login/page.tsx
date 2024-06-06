@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { generateKeys } from "@/utils/keyPair";
 import Sign_in_up from "@/components/Sign-up-in";
+import { setCookie } from "@/helpers/setCookie";
 
 import { signInWithEmailAndPassword as signin } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/firebase";
-import { setCookie } from "@/helpers/setCookie";
 
 export default function login() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function login() {
     const user = await toast.promise(userCredential, {
       loading: "Signing in...",
       success: () => {
-        router.push("/chat");
+        // router.push("/chat");
         return "Signed in successfully";
       },
       error: (err: FirebaseError) => {
@@ -31,7 +31,6 @@ export default function login() {
       },
     });
 
-    console.log(user);
     const user2 = user.user as any;
     setCookie("token", user2.accessToken);
 

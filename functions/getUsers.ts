@@ -1,8 +1,15 @@
-export async function getUsers(): Promise<user[]> {
+"use server";
+
+export async function getUsers(
+  options: { filter?: object } = {
+    filter: {},
+  }
+): Promise<user[]> {
   const conn = await pool.getConnection();
   try {
     const Users = await getTable<user>("users", {
       exclude: ["messages", "chatroom_members", "friendships"] as never[],
+      filter: options?.filter,
     });
 
     return Users;
@@ -20,12 +27,22 @@ async function getTable<T>(
   table: Tables,
   options: {
     exclude?: (keyof T)[] | (keyof T)[];
-  } = {}
+    filter?: object | any;
+  } = {
+    exclude: [],
+    filter: {},
+  }
 ): Promise<T[]> {
   const conn = await pool.getConnection();
 
   try {
-    const result = await conn.query(`SELECT * FROM ${table}`);
+    const query = `SELECT * FROM ${table}`;
+    let where = `WHERE ${Object.entries(options?.filter)
+      .map(([key, value]) => `${key} = '${value}'`)
+      .join(" AND ")};`;
+    if (!Object.keys(options?.filter).length) where = "";
+
+    const result = await conn.query(`${query} ${where}`);
     const relatedTables = await conn.query(`SELECT 
     t.TABLE_NAME,
     c.COLUMN_NAME,
