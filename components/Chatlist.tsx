@@ -43,8 +43,12 @@ export default function Chatlist() {
     setUsers("");
   };
 
-  const handleCreateGroup = () => {
+  const handleCreateGroup = (e: React.FormEvent<HTMLFormElement>) => {
     if (!user) return;
+
+    const formData = new FormData(e.currentTarget);
+
+    const groupName = formData.get("group_name") as string;
 
     createChat(user, [], groupName);
 
@@ -140,7 +144,7 @@ export default function Chatlist() {
               className="flex flex-col gap-5"
               onSubmit={(e) => {
                 e.preventDefault();
-                handleCreateGroup();
+                handleCreateGroup(e);
               }}
             >
               <label className="form-control w-full max-w-xs">
@@ -148,6 +152,7 @@ export default function Chatlist() {
                   <span className="label-text">Name</span>
                 </div>
                 <input
+                  name="group_name"
                   type="text"
                   placeholder="Enter Group Name"
                   className="input input-bordered w-full max-w-xs"
@@ -159,36 +164,38 @@ export default function Chatlist() {
                   <span className="label-text">Users</span>
                 </div>
                 <input
+                  name="users"
                   type="text"
                   placeholder="Enter users"
                   className="input input-bordered w-full max-w-xs"
                 />
               </label>
+
+              <div className="flex w-full justify-end gap-5 p-5">
+                <button
+                  className="btn btn-primary btn-sm btn-circle absolute top-4 right-4"
+                  onClick={() => {
+                    createGroupRef.current!.close();
+                  }}
+                >
+                  <X />
+                </button>
+
+                <button type="submit" className="btn btn-primary">
+                  Create
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    createGroupRef.current!.close();
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
-
-            <div className="flex w-full justify-end gap-5 p-5">
-              <button
-                className="btn btn-primary btn-sm btn-circle absolute top-4 right-4"
-                onClick={() => {
-                  createGroupRef.current!.close();
-                }}
-              >
-                <X />
-              </button>
-
-              <button className="btn btn-primary" onClick={handleCreateGroup}>
-                Create
-              </button>
-
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  createGroupRef.current!.close();
-                }}
-              >
-                Cancel
-              </button>
-            </div>
           </div>
           <form method="dialog" className="modal-backdrop">
             <button>close</button>
