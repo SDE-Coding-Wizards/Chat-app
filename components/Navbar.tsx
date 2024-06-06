@@ -3,74 +3,74 @@
 import Link from "next/link";
 import ThemeController from "./ThemeController";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import AddFriend from "@/app/(pages)/friendTabs/AddFriend";
 import ProfilePic from "./ProfilePic";
+import Online from "@/app/(pages)/friendTabs/Online";
 
 export default function Navbar() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
+  const router = useRouter();
 
   const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
 
   const openAddFriendModal = () => setIsAddFriendModalOpen(true);
   const closeAddfriendModal = () => setIsAddFriendModalOpen(false);
 
+  const handleTabChange = (tab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    router.push(`/chat/?${params.toString()}`);
+  };
+
   return (
-    <nav className="border-b-2">
-      <div className="flex items-center absolute left-6">
-        <ThemeController />
-      </div>
-      <div className="flex items-center justify-center w-full">
-        <Link href="/" className="font-bold text-3xl rounded-md">
-          Chat Wizards
-        </Link>
-      </div>
-      <div className="flex items-center absolute right-6">
-        <Link href={`/chat/?tab=online`} passHref>
-          <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "online" && "bg-green-400"
-            }`}
+    <>
+      <nav className="border-b-2">
+        <div className="flex items-center absolute left-6">
+          <ThemeController />
+        </div>
+        <div className="flex items-center justify-center w-full">
+          <Link href="/" className="font-bold text-3xl rounded-md">
+            Chat Wizards
+          </Link>
+        </div>
+        <div className="flex items-center absolute gap-3 right-6">
+          <button
+            onClick={() => handleTabChange("online")}
+            className={`btn btn-outline ${tab === "online" && " btn-success"}`}
           >
             Online
-          </span>
-        </Link>
-        <Link href={`/chat/?tab=all`} passHref>
-          <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "all" && "bg-green-400"
-            }`}
+          </button>
+          <button
+            onClick={() => handleTabChange("All")}
+            className={`btn btn-outline ${tab === "all" && " btn-success"}`}
           >
             All
-          </span>
-        </Link>
-        <Link href={`/chat/?tab=pending`} passHref>
-          <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "pending" && "bg-green-400"
+          </button>
+          <button
+            onClick={() => handleTabChange("pending")}
+            className={`btn btn-outline  ${
+              tab === "pending" && " btn-success"
             }`}
           >
             Pending
-          </span>
-        </Link>
-        <button
-          onClick={openAddFriendModal}
-          className="p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105"
-        >
-          Add Friend
-        </button>
-        <Link href="/profileSettings" passHref>
-          <span>
-            <ProfilePic />
-          </span>
-        </Link>
-        <AddFriend
-          isOpen={isAddFriendModalOpen}
-          onClose={closeAddfriendModal}
-        />
-      </div>
-    </nav>
+          </button>
+          <button onClick={openAddFriendModal} className="btn btn-outline">
+            Add Friend
+          </button>
+          <Link href="/profileSettings" passHref>
+            <span>
+              <ProfilePic />
+            </span>
+          </Link>
+          <AddFriend
+            isOpen={isAddFriendModalOpen}
+            onClose={closeAddfriendModal}
+          />
+        </div>
+      </nav>
+    </>
   );
 }

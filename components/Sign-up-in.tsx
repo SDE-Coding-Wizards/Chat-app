@@ -101,6 +101,7 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
         <button
           className="px-4 py-2 btn btn-neutral text-xl font-bold rounded-lg"
           onClick={handleGoogleSignIn}
+          type="button"
         >
           <div className="bg-white rounded-full p-1 mr-3">
             <svg
@@ -137,17 +138,26 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
         <div className="flex flex-col gap-4">
           {type === "Sign up" && (
             <>
-              <a href="/login" className="btn btn-link btn-sm">
+              <a
+                href="/login"
+                className="no-underline hover:text-white transition duration-500 ease-in-out flex flex-col items-center justify-center"
+              >
                 Already have an account? Sign in
               </a>
             </>
           )}
           {type === "Sign in" && (
             <>
-              <a href="/forgot-password" className="btn btn-link btn-sm">
+              <a
+                href="/forgot-password"
+                className="no-underline hover:text-white transition duration-500 ease-in-out flex flex-col items-center justify-center"
+              >
                 Forgot password?
               </a>
-              <a href="/signUp" className="btn btn-link btn-sm">
+              <a
+                href="/signUp"
+                className="no-underline hover:text-white transition duration-500 ease-in-out flex flex-col items-center justify-center"
+              >
                 Don't have an account? Sign up
               </a>
             </>
