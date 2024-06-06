@@ -1,3 +1,4 @@
+export { createUser } from "./createUser"
 export { getChatrooms } from "./getChatrooms"
 export { getEncryptedChatKey } from "./getEncryptedChatKey"
 export { getMessages } from "./getMessages"

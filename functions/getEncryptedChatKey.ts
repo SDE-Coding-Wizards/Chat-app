@@ -1,3 +1,5 @@
+"use server"
+
 export async function getEncryptedChatKey(
   chatroom_uuid: string,
   user_uuid: string

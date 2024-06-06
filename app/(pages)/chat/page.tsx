@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-import { getUsers } from "./[uuid]/functions";
-import { Chatlist, Userlist, NavTab } from "@/components";
+import { getUsers } from "../../../functions";
+import { Chatlist, Userlist } from "@/components";
 import { createChat, getUser } from "@/helpers";
-
 
 export default async function ChatPage() {
   const user = await getUser();
@@ -13,7 +12,6 @@ export default async function ChatPage() {
 
   return (
     <div>
-      <NavTab />
       <Chatlist />
       {/* <Userlist user={user} users={users} createChat={createChat} /> */}
     </div>
