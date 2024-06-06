@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="luxury">
       <head>
-        <title>Chat App</title>
+        <title>Chat Wizards</title>
         <meta name="description" content="Chat App by SDE Code Wizards" />
       </head>
       <body>
