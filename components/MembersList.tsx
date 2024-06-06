@@ -24,9 +24,8 @@ export default function MembersList({ members }: MembersListProps) {
         <Usericon size={24} />
       </button>
       <div
-        className={`w-64 max-h-64 shadow-md ${
-          sidebarOpen ? " right-0" : "hidden"
-        }`}
+        className={`w-64 max-h-64 shadow-md ${sidebarOpen ? " right-0" : "hidden"
+          }`}
       >
         <div className="text-base font-semibold">
           {members.map((member) => (
