@@ -30,27 +30,24 @@ export default function Navbar() {
       <div className="flex items-center absolute right-6">
         <Link href={`/chat/?tab=online`} passHref>
           <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "online" && "bg-green-400"
-            }`}
+            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${tab === "online" && "bg-green-400"
+              }`}
           >
             Online
           </span>
         </Link>
         <Link href={`/chat/?tab=all`} passHref>
           <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "all" && "bg-green-400"
-            }`}
+            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${tab === "all" && "bg-green-400"
+              }`}
           >
             All
           </span>
         </Link>
         <Link href={`/chat/?tab=pending`} passHref>
           <span
-            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${
-              tab === "pending" && "bg-green-400"
-            }`}
+            className={`p-2 mx-2 bg-base-300 rounded-md transition duration-300 ease-in-out transform hover:bg-base-400 active:bg-base-500 hover:scale-105 ${tab === "pending" && "bg-green-400"
+              }`}
           >
             Pending
           </span>
