@@ -12,3 +12,13 @@ type Tables =
   | "user_settings"
   | "user_tags"
   | "users";
+
+type Singular<T extends string> = T extends "statuses"
+  ? "status"
+  : T extends `${infer U}s`
+  ? U
+  : T;
+
+type SingularTables = {
+  [K in Tables]: Singular<K>;
+}[Tables];

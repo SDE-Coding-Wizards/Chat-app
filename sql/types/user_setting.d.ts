@@ -7,5 +7,5 @@ declare namespace user_setting {
 }
 
 interface user_setting extends user_setting.referencing, user_setting.referenced {
-  uuid: user["uuid"];
+  user_uuid: user["uuid"];
 }

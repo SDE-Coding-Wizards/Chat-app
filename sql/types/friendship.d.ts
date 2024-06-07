@@ -1,6 +1,7 @@
 declare namespace friendship {
   export interface referencing {
-    user: user;
+    user1: user;
+    user2: user;
   }
 
   export interface referenced {}

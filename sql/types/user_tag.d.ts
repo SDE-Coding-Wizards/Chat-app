@@ -10,5 +10,5 @@ declare namespace user_tag {
 interface user_tag extends user_tag.referencing, user_tag.referenced {
   uuid: UUID;
   user_uuid: user["uuid"];
-  tag_id: tag["uuid"];
+  tag_id: tag["id"];
 }

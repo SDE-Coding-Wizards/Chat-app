@@ -16,10 +16,9 @@ declare namespace user {
 interface user extends user.referencing, user.referenced {
   uuid: UUID;
   email: string;
-  password: string;
   firstname?: string;
   lastname?: string;
-  status_id: status["uuid"];
+  status_id: status["id"];
   bio?: string;
   image_path?: string;
   created_at: Date;
