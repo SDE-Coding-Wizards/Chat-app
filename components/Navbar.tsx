@@ -11,10 +11,12 @@ export default async function Navbar() {
     <>
       <nav className="border-b-2">
         <div className="flex items-center absolute left-6">
-          <ThemeController />
+          <div className="hidden sm:block">
+            <ThemeController />
+          </div>
         </div>
         <div className="flex items-center justify-center w-full">
-          <Link href="/" className="font-bold text-3xl rounded-md">
+          <Link href="/" className="font-bold text-3xl rounded-md hidden sm:block">
             Chat Wizards
           </Link>
         </div>

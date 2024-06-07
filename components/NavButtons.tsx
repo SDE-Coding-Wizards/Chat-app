@@ -19,27 +19,31 @@ export default function NavButtons() {
     params.set("tab", tab);
     router.push(`/chat/?${params.toString()}`);
   };
+
   return (
     <>
       <button
         onClick={() => handleTabChange("online")}
-        className={`btn btn-outline ${tab === "online" && " btn-success"}`}
+        className={`btn btn-outline ${tab === "online" && " btn-success"} p-1 sm:p-2 text-sm sm:text-base`}
       >
         Online
       </button>
       <button
         onClick={() => handleTabChange("all")}
-        className={`btn btn-outline ${tab === "all" && " btn-success"}`}
+        className={`btn btn-outline ${tab === "all" && " btn-success"} p-1 sm:p-2 text-sm sm:text-base`}
       >
         All
       </button>
       <button
         onClick={() => handleTabChange("pending")}
-        className={`btn btn-outline  ${tab === "pending" && " btn-success"}`}
+        className={`btn btn-outline ${tab === "pending" && " btn-success"} p-1 sm:p-2 text-sm sm:text-base`}
       >
         Pending
       </button>
-      <button onClick={openAddFriendModal} className="btn btn-outline">
+      <button
+        onClick={openAddFriendModal}
+        className="btn btn-outline p-1 sm:p-2 text-sm sm:text-base"
+      >
         Add Friend
       </button>
 
