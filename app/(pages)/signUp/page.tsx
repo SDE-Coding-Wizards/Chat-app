@@ -9,11 +9,13 @@ import { createUser } from "@/functions/createUser";
 
 import app from "@/firebase";
 import {
+  User,
   getAdditionalUserInfo,
   getAuth,
   createUserWithEmailAndPassword as signup,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
+import { setCookie } from "@/helpers/setCookie";
 
 export default function SignUp() {
   const router = useRouter();
@@ -27,9 +29,7 @@ export default function SignUp() {
 
     const encrypt_key = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "secret";
 
-    const userCredential = signup(auth, email, password);
-
-    const user = await toast.promise(userCredential, {
+    const userCredential = await toast.promise(signup(auth, email, password), {
       loading: "Signing up...",
       success: "Signed up successfully",
       error: (err: FirebaseError) => {
@@ -37,11 +37,11 @@ export default function SignUp() {
       },
     });
 
-    const userInfo = getAdditionalUserInfo(user)!;
+    const userInfo = getAdditionalUserInfo(userCredential)!;
 
     const dbUser = {
-      uuid: user.user?.uid as UUID,
-      email: user.user.email!,
+      uuid: userCredential.user?.uid as UUID,
+      email: userCredential.user.email!,
       firstname: userInfo.profile?.given_name,
       lastname: userInfo.profile?.family_name,
       public_key: publicKey,
@@ -50,7 +50,9 @@ export default function SignUp() {
 
     await createUser(dbUser);
 
-    // localStorage.setItem("privateKey", privateKey);
+    const user = userCredential.user as User & { accessToken: string };
+
+    setCookie("token", user.accessToken);
   }
 
   return <Sign_in_up type="Sign up" handleSubmit={handleSignup} />;

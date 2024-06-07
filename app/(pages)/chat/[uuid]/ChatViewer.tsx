@@ -26,7 +26,7 @@ export default function ChatViewer({
   const [messages, setMessages] =
     useState<MessageWithLoading[]>(initialMessages);
 
-  const [chatSocket, connected] = useWebsocket("/chat", {
+  useWebsocket("/chat", {
     events: { "receive-message": updateList },
     room: chatroom_uuid,
   });
