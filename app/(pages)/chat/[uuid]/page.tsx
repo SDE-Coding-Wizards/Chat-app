@@ -10,6 +10,8 @@ import ChatViewer from "./ChatViewer";
 import ChatInput from "./ChatInput";
 import { Chatlist } from "@/components";
 import MembersList from "@/components/MembersList";
+import { Trash2 } from 'lucide-react';
+import DeleteGroup from "@/components/DeleteGroup";
 
 interface ChatProps {
   params: { uuid: UUID };
@@ -37,8 +39,14 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
       <Chatlist initialChatrooms={chatrooms} />
 
       <section className="flex flex-col w-full h-full p-4 gap-4">
-        <header className="text-2xl font-bold mb-4">{groupName}</header>
-        
+        <div className="flex">
+          <header className="text-2xl font-bold mb-4 pr-3">{groupName}</header>
+          <div className="mt-1">
+            <DeleteGroup />
+          </div>
+        </div>
+
+
         <ChatViewer
           chatroom_uuid={uuid}
           chatKey={encryptedChatKey}
