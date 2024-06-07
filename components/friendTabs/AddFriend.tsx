@@ -1,4 +1,8 @@
+"use client";
+
+import { addFriend } from "@/functions/addFriend";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AddFriend({
   isOpen,
@@ -17,11 +21,18 @@ export default function AddFriend({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("Submitted email:", email);
-    // Add any other actions you want to perform on form submission
-  };
+
+    toast.promise(addFriend(email), {
+      loading: "Adding friend...",
+      success: "Friend added!",
+      error: (err) => {
+        console.log(err);
+        return "Failed to add friend";
+      },
+    });
+  }
 
   return (
     <>

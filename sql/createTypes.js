@@ -82,8 +82,7 @@ async function createTypes() {
 
   fs.writeFileSync(
     typesPath + "/tables.d.ts",
-    `type Tables =${allTables.map((table) => `\n  | "${table}"`).join("")};
-    `
+    `type Tables =${allTables.map((table) => `\n  | "${table}"`).join("")};\n`
   );
 
   function tablesString(newTable, type = "reffing") {

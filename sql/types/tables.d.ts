@@ -4,6 +4,7 @@ type Tables =
   | "chatrooms"
   | "content_types"
   | "contents"
+  | "friend_requests"
   | "friendships"
   | "messages"
   | "statuses"

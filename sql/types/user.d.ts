@@ -5,6 +5,7 @@ declare namespace user {
 
   export interface referenced {
     chatroom_members: chatroom_member[];
+    friend_requests: friend_request[];
     friendships: friendship[];
     messages: message[];
     user_settings: user_setting[];

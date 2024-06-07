@@ -1,3 +1,5 @@
+"use server"
+
 import { getUser } from "@/helpers";
 
 export async function addFriend(user_email: any) {
@@ -19,4 +21,8 @@ export async function addFriend(user_email: any) {
     "INSERT INTO friend_requests (uuid, sender_uuid, receiver_uuid) VALUES (uuid(), ?, ?)",
     [user.uuid, receiver.uuid]
   );
+
+  conn.release();
+
+  return true
 }
