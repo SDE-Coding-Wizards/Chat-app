@@ -14,6 +14,7 @@ import { auth } from "@/firebase";
 import { getUsers, createUser } from "@/functions";
 import { generateKeys } from "@/utils/keyPair";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/helpers";
 
 interface SignInUpProps {
   type: "Sign in" | "Sign up";
@@ -30,8 +31,10 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
 
   const router = useRouter();
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) router.push("/chat");
+  onAuthStateChanged(auth, async (authUser) => {
+    const dbUser = await getUser();
+    
+    if (authUser && dbUser) router.push("/chat");
   });
 
   async function handleGoogleSignIn() {
