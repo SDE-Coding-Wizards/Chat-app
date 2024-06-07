@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { setCookie } from "@/helpers/setCookie";
+import { useRouter } from "next/navigation";
 
 export default function ProfileSettings() {
+  const router = useRouter();
+
   const [user, setUser] = useState<user | null>(null);
 
   useEffect(() => {
@@ -17,6 +20,8 @@ export default function ProfileSettings() {
   async function handleSignOut() {
     await signOut(auth);
     await setCookie("token", "");
+
+    router.push("/login");
   }
 
   return (
@@ -25,7 +30,7 @@ export default function ProfileSettings() {
         <ProfilePic />
         <button className="btn btn-neutral mt-3">Change Picture</button>
       </div>
-      <div className="flex flex-col items-start ml-5 mt-5">
+      <form className="flex flex-col items-start ml-5 mt-5">
         <label className="text-lg mt-5">First Name</label>
         <input
           type="text"
@@ -63,8 +68,14 @@ export default function ProfileSettings() {
           />
         </div>
         <button className="btn mt-7 w-64">Save & Update</button>
-        <button onClick={handleSignOut} className="btn btn-neutral mt-3 w-64">Sign Out</button>
-      </div>
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="btn btn-neutral mt-3 w-64"
+        >
+          Sign Out
+        </button>
+      </form>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { generateKeys } from "@/utils/keyPair";
 import Sign_in_up from "@/components/Sign-up-in";
 import { setCookie } from "@/helpers/setCookie";
 
-import { signInWithEmailAndPassword as signin } from "firebase/auth";
+import { User, signInWithEmailAndPassword as signin } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/firebase";
 
@@ -18,9 +18,7 @@ export default function login() {
 
     const { privateKey, publicKey } = await generateKeys();
 
-    const userCredential = signin(auth, email, password);
-
-    const user = await toast.promise(userCredential, {
+    const userCredential = await toast.promise(signin(auth, email, password), {
       loading: "Signing in...",
       success: () => {
         // router.push("/chat");
@@ -31,8 +29,9 @@ export default function login() {
       },
     });
 
-    const user2 = user.user as any;
-    setCookie("token", user2.accessToken);
+    const user = userCredential.user as User & { accessToken: string };
+
+    setCookie("token", user.accessToken);
 
     // localStorage.setItem("privateKey", privateKey);
   }
