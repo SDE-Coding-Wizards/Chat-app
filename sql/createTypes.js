@@ -5,7 +5,9 @@ import path from "path";
 
 dotenv.config();
 
-const pool = mariadb.createPool(process.env.DATABASE_URL);
+const dbUrl = mariadb.defaultOptions(process.env.DATABASE_URL);
+
+const pool = mariadb.createPool({ ...dbUrl, bigIntAsNumber: true });
 
 const datatypes = {
   varchar: "string",
@@ -32,40 +34,36 @@ async function createTypes() {
   let allTables = [];
 
   allColumns
-    .sort((a, b) => Number(a.ORDINAL_POSITION) - Number(b.ORDINAL_POSITION))
-    .sort((a, b) => a.TABLE_NAME.localeCompare(b.TABLE_NAME));
+    .sort((a, b) => a.pos - b.pos)
+    .sort((a, b) => a.table.localeCompare(b.table));
 
   for (const column of allColumns) {
-    let {
-      TABLE_NAME: table,
-      COLUMN_NAME: name,
-      DATA_TYPE: type,
-      REFERENCED_TABLE_NAME: ref_table_name,
-      REFERENCED_COLUMN_NAME: ref_col_name,
-      COLUMN_DEFAULT: _default,
-    } = column;
+    let { table, name, type, ref_table, ref_col } = column;
 
     allTables.push(table);
 
     if (table !== "statuses") table = table.slice(0, -1);
     else table = "status";
-    if (ref_table_name && ref_table_name !== "statuses")
-      ref_table_name = ref_table_name.slice(0, -1);
-    else ref_table_name = "status";
+    if (ref_table && ref_table !== "statuses")
+      ref_table = ref_table.slice(0, -1);
+    else ref_table = "status";
 
     newTables[table] ??= {};
 
-    name += column.IS_NULLABLE === "NO" ? "" : "?";
+    if (column.nullable) name += "?";
 
     newTables[table][name] = datatypes[type];
 
     if (name == "uuid") newTables[table][name] = "UUID";
 
-    if (ref_col_name) {
-      newTables[table][name] = `${ref_table_name}["uuid"]`;
+    if (ref_col) {
+      newTables[table][name] = `${ref_table}["uuid"]`;
 
-      (reffingTables[table] ??= {})[ref_table_name] = ref_col_name;
-      (reffedTables[ref_table_name] ??= {})[table] = ref_col_name;
+      // console.log(name.replace("_uuid", ""), ref_col);
+
+      // (reffingTables[table] ??= {})[name.replace("_uuid", "")] = ref_col;
+      (reffingTables[table] ??= {})[ref_table] = ref_col;
+      (reffedTables[ref_table] ??= {})[table] = ref_col;
     }
   }
 
@@ -99,6 +97,10 @@ async function createTypes() {
       s = "";
       l = "";
     }
+
+    // Object.entries(tables[newTable] || {}).forEach(([table, column]) => {
+    //   console.log(newTable, table, column);
+    // });
 
     let returnString = `export interface ${name} {`;
     if (!tables[newTable]) return returnString + "}";
