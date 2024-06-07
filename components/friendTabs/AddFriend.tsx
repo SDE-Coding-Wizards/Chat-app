@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 export default function AddFriend({
   isOpen,
   onClose,
@@ -5,6 +7,8 @@ export default function AddFriend({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [email, setEmail] = useState("");
+
   const handleBackdropClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -12,6 +16,13 @@ export default function AddFriend({
       onClose();
     }
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Submitted email:", email);
+    // Add any other actions you want to perform on form submission
+  };
+
   return (
     <>
       {isOpen && (
@@ -20,37 +31,36 @@ export default function AddFriend({
           onClick={handleBackdropClick}
         >
           <div
-            className=" bg-base-200 p-8 rounded-md shadow-lg w-full max-w-md"
+            className="bg-base-200 p-8 rounded-md shadow-lg w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-xl font-bold mb-4">Add Friend</h2>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
                   htmlFor="friend-email"
-                  className="block text-sm font-medium "
+                  className="block text-sm font-medium"
                 >
                   Friend's Email
                 </label>
                 <input
                   type="email"
                   id="friend-email"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50"
                   required
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-5">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mr-4 p-2 bg-red-500 rounded-md transition duration-300 ease-in-out transform hover:bg-red-600"
+                  className="btn btn-warning"
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="p-2 bg-green-500 rounded-md transition duration-300 ease-in-out transform hover:bg-green-600"
-                >
+                <button type="submit" className="btn btn-success">
                   Add
                 </button>
               </div>
