@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import AddFriend from "@/app/(pages)/friendTabs/AddFriend";
+import AddFriend from "@/components/friendTabs/AddFriend";
 
 export default function NavButtons() {
   const searchParams = useSearchParams();
@@ -28,7 +28,7 @@ export default function NavButtons() {
         Online
       </button>
       <button
-        onClick={() => handleTabChange("All")}
+        onClick={() => handleTabChange("all")}
         className={`btn btn-outline ${tab === "all" && " btn-success"}`}
       >
         All
