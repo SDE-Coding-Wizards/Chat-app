@@ -41,8 +41,8 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
       <section className="flex flex-col w-full h-full p-4 gap-4">
         <div className="flex">
           <header className="text-2xl font-bold mb-4 pr-3">{groupName}</header>
-          <div className="mt-1">
-            <DeleteGroup />
+          <div className="pt-1">
+            <DeleteGroup uuid={uuid} />
           </div>
         </div>
 
