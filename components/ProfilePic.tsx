@@ -20,7 +20,7 @@ export default function ProfilePic({ initialUser = null }: ProfilePicProps) {
   return (
     <div>
       <Image
-        className="rounded-3xl mx-2"
+        className="rounded-3xl mx-2 h-12 w-12"
         src={user?.image_path || "/default.webp"}
         alt="Profile Picture"
         width={50}
