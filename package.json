@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "types": "node sql/createTypes"
+    "types": "npx tsx sql/createTypes.ts"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
