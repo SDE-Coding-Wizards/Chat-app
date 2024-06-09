@@ -52,7 +52,7 @@ export default function AddFriend({
                   htmlFor="friend-email"
                   className="block text-sm font-medium"
                 >
-                  Friend's Email
+                  Friend&apos;s Email
                 </label>
                 <input
                   type="email"

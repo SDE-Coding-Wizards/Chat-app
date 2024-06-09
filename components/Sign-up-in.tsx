@@ -26,7 +26,7 @@ interface SignInUpProps {
   ) => Promise<any>;
 }
 
-export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
+export default function SignInUp({ type, handleSubmit }: SignInUpProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
@@ -41,7 +41,7 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
 
       setIsLoaded(!Boolean(authUser && dbUser));
     });
-  }, []);
+  }, [router]);
 
   async function handleGoogleSignIn() {
     const provider = new GoogleAuthProvider();
@@ -171,7 +171,7 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
                 href="/signUp"
                 className="no-underline hover:text-white transition duration-500 ease-in-out flex flex-col items-center justify-center"
               >
-                Don't have an account? Sign up
+                Don&apos;t have an account? Sign up
               </a>
             </>
           )}

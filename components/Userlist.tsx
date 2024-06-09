@@ -1,6 +1,5 @@
 "use client";
 
-import { User } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { createChatParams } from "@/helpers/createChat";
 

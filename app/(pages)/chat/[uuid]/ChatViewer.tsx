@@ -19,8 +19,6 @@ export default function ChatViewer({
   chatKey,
   user,
 }: ChatViewerProps) {
-  if (!chatKey) return <div>Loading...</div>;
-
   const decryptedChatKey = getChatkey(chatKey, user);
 
   const [messages, setMessages] =
@@ -41,6 +39,8 @@ export default function ChatViewer({
       return newList;
     });
   }
+
+  if (!chatKey) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col h-full overflow-y-scroll bg-base-100 border border-base-300 rounded-lg p-4">

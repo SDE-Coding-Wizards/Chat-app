@@ -15,7 +15,7 @@ export default function ProfilePic({ initialUser = null }: ProfilePicProps) {
     if (user) return;
 
     getUser().then(setUser);
-  }, []);
+  }, [user]);
 
   return (
     <div>

@@ -10,7 +10,7 @@ import { User, signInWithEmailAndPassword as signin } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/firebase";
 
-export default function login() {
+export default function Login() {
   const router = useRouter();
 
   async function handleLogin(email: string, password: string) {
