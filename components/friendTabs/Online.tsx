@@ -16,11 +16,15 @@ const StatusIcon = ({ status_id }: any) => {
   );
 };
 
-export default function Online() {
+interface OnlineProps {
+  initialUsers: user[];
+}
+
+export default function Online({ initialUsers }: OnlineProps) {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const [users, setUsers] = useState<user[]>([]);
+  const [users, setUsers] = useState<user[]>(initialUsers);
 
   useEffect(() => {
     getUsers().then(setUsers);

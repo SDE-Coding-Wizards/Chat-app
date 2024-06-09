@@ -1,23 +1,23 @@
 import { notFound } from "next/navigation";
-import { getUsers } from "@/functions";
-import { Chatlist, Userlist } from "@/components";
-import { createChat, getUser } from "@/helpers";
+import { getChatrooms, getUsers } from "@/functions";
+import { Chatlist } from "@/components";
 import { Online, Pending, All } from "@/components/friendTabs";
+import { getUser } from "@/helpers";
 
 export default async function ChatPage() {
   const user = await getUser();
 
   if (!user) return notFound();
 
-  const users = await getUsers();
+  const chatrooms = await getChatrooms(user.uuid);
+  const friendsOnline = await getUsers()
 
   return (
-    <div className="flex ">
-      <Chatlist />
+    <div className="flex h-full">
+      <Chatlist initialChatrooms={chatrooms} />
       <Pending />
-      <Online />
+      <Online initialUsers={friendsOnline} />
       <All />
-      {/* <Userlist user={user} users={users} createChat={createChat} /> */}
     </div>
   );
 }

@@ -76,7 +76,7 @@ export default function Chatlist({ initialChatrooms = [] }: ChatlistProps) {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <button
         onClick={toggleSidebar}
         className="md:hidden p-2 bg-base-200 fixed top-0 left-0 z-10"

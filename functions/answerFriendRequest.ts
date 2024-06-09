@@ -11,14 +11,14 @@ export async function answerFriendRequest(uuid: UUID, isAccepted: boolean) {
     );
 
     if (isAccepted) {
-      const [{ reciever_uuid, sender_uuid } = {} as any] = await conn.query(
+      const [{ receiver_uuid, sender_uuid } = {} as any] = await conn.query(
         `SELECT receiver_uuid, sender_uuid FROM friend_requests WHERE uuid = ?`,
         [uuid]
       );
 
       await conn.query(
         `INSERT INTO friendships (uuid, user1_uuid, user2_uuid) VALUES (uuid(), ?, ?)`,
-        [reciever_uuid, sender_uuid]
+        [receiver_uuid, sender_uuid]
       );
     }
 
