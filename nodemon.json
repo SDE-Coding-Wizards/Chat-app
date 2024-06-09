@@ -1,0 +1,5 @@
+{
+  "watch": [ "websocket" ],
+  "ext": "ts",
+  "exec": "node --no-warnings --loader ts-node/esm websocket/server.ts"
+}
