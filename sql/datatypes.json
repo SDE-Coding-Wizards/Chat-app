@@ -1,0 +1,8 @@
+{
+  "varchar": "string",
+  "text": "string",
+  "int": "number",
+  "datetime": "Date",
+  "tinyint": "boolean",
+  "uuid": "UUID"
+}

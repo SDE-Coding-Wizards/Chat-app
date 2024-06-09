@@ -1,6 +1,7 @@
 declare namespace friendship {
   export interface referencing {
-    user: user;
+    user1: user;
+    user2: user;
   }
 
   export interface referenced {}
@@ -8,7 +9,7 @@ declare namespace friendship {
 
 interface friendship extends friendship.referencing, friendship.referenced {
   uuid: UUID;
-  user_uuid_1: user["uuid"];
-  user_uuid_2: user["uuid"];
+  user1_uuid: user["uuid"];
+  user2_uuid: user["uuid"];
   created_at: Date;
 }

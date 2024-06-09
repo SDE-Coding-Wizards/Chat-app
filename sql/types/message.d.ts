@@ -2,7 +2,7 @@ declare namespace message {
   export interface referencing {
     chatroom: chatroom;
     content: content;
-    user: user;
+    author: user;
   }
 
   export interface referenced {}

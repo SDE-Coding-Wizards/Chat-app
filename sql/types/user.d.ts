@@ -5,6 +5,7 @@ declare namespace user {
 
   export interface referenced {
     chatroom_members: chatroom_member[];
+    friend_requests: friend_request[];
     friendships: friendship[];
     messages: message[];
     user_settings: user_setting[];
@@ -15,10 +16,9 @@ declare namespace user {
 interface user extends user.referencing, user.referenced {
   uuid: UUID;
   email: string;
-  password: string;
   firstname?: string;
   lastname?: string;
-  status_id: status["uuid"];
+  status_id: status["id"];
   bio?: string;
   image_path?: string;
   created_at: Date;

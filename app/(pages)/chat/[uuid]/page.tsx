@@ -26,15 +26,19 @@ export default async function Chat({ params: { uuid } }: ChatProps) {
 
   if (!encryptedChatKey) return notFound();
 
-  const chatroom = chatrooms.find(({ uuid }) => uuid === uuid);
+  const chatroom = chatrooms.find(({ uuid: chatUuid }) => chatUuid === uuid);
 
   if (!chatroom) return notFound();
+
+  const groupName = chatroom.name || "Group Chat";
 
   return (
     <div className="flex bg-base-100 h-full">
       <Chatlist initialChatrooms={chatrooms} />
 
       <section className="flex flex-col w-full h-full p-4 gap-4">
+        <header className="text-2xl font-bold mb-4">{groupName}</header>
+        
         <ChatViewer
           chatroom_uuid={uuid}
           chatKey={encryptedChatKey}

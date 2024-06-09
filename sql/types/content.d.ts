@@ -10,6 +10,6 @@ declare namespace content {
 
 interface content extends content.referencing, content.referenced {
   uuid: UUID;
-  content_type_id: content_type["uuid"];
+  content_type_id: content_type["id"];
   content: string;
 }
