@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyRound, Mail } from "lucide-react";
 import { setCookie } from "@/helpers/setCookie";
 
@@ -15,6 +15,7 @@ import { getUsers, createUser } from "@/functions";
 import { generateKeys } from "@/utils/keyPair";
 import { useRouter } from "next/navigation";
 import { getUser } from "@/helpers";
+import Loading from "./Loading";
 
 interface SignInUpProps {
   type: "Sign in" | "Sign up";
@@ -28,14 +29,19 @@ interface SignInUpProps {
 export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const router = useRouter();
 
-  onAuthStateChanged(auth, async (authUser) => {
-    const dbUser = await getUser();
-    
-    if (authUser && dbUser) router.push("/chat");
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, async (authUser) => {
+      const dbUser = await getUser();
+
+      if (authUser && dbUser) router.push("/chat");
+
+      setIsLoaded(!Boolean(authUser && dbUser));
+    });
+  }, []);
 
   async function handleGoogleSignIn() {
     const provider = new GoogleAuthProvider();
@@ -48,7 +54,7 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
 
     const [findUser] = await getUsers({ filter: { email: user.email } });
 
-    if (findUser) return;
+    if (findUser) return router.push("/chat");
 
     const { privateKey, publicKey } = await generateKeys();
 
@@ -63,7 +69,11 @@ export default function Sign_in_up({ type, handleSubmit }: SignInUpProps) {
       private_key: privateKey,
       public_key: publicKey,
     } as user);
+
+    router.push("/chat");
   }
+
+  if (!isLoaded) return <Loading />;
 
   return (
     <form

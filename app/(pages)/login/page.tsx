@@ -21,7 +21,7 @@ export default function login() {
     const userCredential = await toast.promise(signin(auth, email, password), {
       loading: "Signing in...",
       success: () => {
-        // router.push("/chat");
+        router.push("/chat");
         return "Signed in successfully";
       },
       error: (err: FirebaseError) => {
