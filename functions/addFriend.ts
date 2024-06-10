@@ -1,6 +1,7 @@
 "use server"
 
 import { getUser } from "@/helpers";
+import { pool } from "@/lib/server/database";
 
 export async function addFriend(user_email: any) {
   if (!user_email) return;

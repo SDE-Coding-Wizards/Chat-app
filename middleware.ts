@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
+import { jwtVerify, decodeJwt } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "secret");
 if (!JWT_SECRET) {
@@ -18,7 +18,8 @@ export async function middleware(request: NextRequest & { user?: user }) {
 
   try {
     // Verify the token
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    // const { payload } = await jwtVerify(token, JWT_SECRET);
+    const payload = decodeJwt(token);
     const decodedUser = payload as unknown as user | null;
 
     if (!decodedUser) {

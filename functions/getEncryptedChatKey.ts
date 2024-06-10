@@ -1,5 +1,7 @@
 "use server"
 
+import { pool } from "@/lib/server/database";
+
 export async function getEncryptedChatKey(
   chatroom_uuid: string,
   user_uuid: string

@@ -1,5 +1,7 @@
 "use server";
 
+import { pool } from "@/lib/server/database";
+
 export async function getUsers(
   options: { filter?: object } = {
     filter: {},

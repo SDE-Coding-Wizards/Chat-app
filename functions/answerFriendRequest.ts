@@ -1,5 +1,7 @@
 "use server";
 
+import { pool } from "@/lib/server/database";
+
 export async function answerFriendRequest(uuid: UUID, isAccepted: boolean) {
   const conn = await pool.getConnection();
   try {

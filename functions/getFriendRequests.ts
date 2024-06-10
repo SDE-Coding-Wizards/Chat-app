@@ -1,5 +1,7 @@
 "use server";
 
+import { pool } from "@/lib/server/database";
+
 import { getUser } from "@/helpers";
 
 export async function getFriendRequests(): Promise<friend_request[]> {
