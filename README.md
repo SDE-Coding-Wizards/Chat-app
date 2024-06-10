@@ -6,7 +6,7 @@ This project is a chat app with features similar to discord and messenger.
 List of contributers to the project
 
 [](https://github.com/half0150)
-<div style="display:flex; flex-direction:row;">
+<div style="display:flex; width: 100%;">
     <a href="https://github.com/kenn7575" target="_blank">
         <img src="https://avatars.githubusercontent.com/u/96551540?s=70&v=4" width="40" height="40" style="border-radius:50%;" alt="linkedin logo"  />
         <p style=" writing-mode: vertical-lr; text-orientation: mixed; transform-origin: top left;  transform: translateY(10px)  rotate(-45deg);  font-weight: bold;">kenn7575</p>
