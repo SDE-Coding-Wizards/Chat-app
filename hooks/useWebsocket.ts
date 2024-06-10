@@ -10,10 +10,12 @@ interface WebsocketOptions {
   room: string;
 }
 
-const WS_SERVER = process.env.NEXT_PUBLIC_WS_SERVER || "http://localhost";
+const WS_SERVER = process.env.NEXT_PUBLIC_WS_SERVER;
 const WS_PORT = process.env.NEXT_PUBLIC_WS_PORT || 5000;
 
-const baseUrl = `${WS_SERVER}:${WS_PORT}`;
+let baseUrl = WS_SERVER;
+
+if (!WS_SERVER) baseUrl = `http://localhost:${WS_PORT}`;
 
 export function useWebsocket(url: string, options?: WebsocketOptions) {
   const socket = io(`${baseUrl}${url}`);
