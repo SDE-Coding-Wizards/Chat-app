@@ -7,7 +7,7 @@ dotenv.config();
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -24,7 +24,7 @@ chat.on("connection", async (socket: Socket) => {
   });
 });
 
-const PORT = process.env.NEXT_PUBLIC_WS_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
   console.log("Server listening on port", PORT);
