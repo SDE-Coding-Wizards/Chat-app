@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,12 +14,12 @@ const io = new Server(httpServer, {
 
 const chat = io.of("/chat");
 
-chat.on("connection", async (socket: Socket) => {
-  socket.on("join-room", (chatroom_uuid: string) => {
+chat.on("connection", async (socket) => {
+  socket.on("join-room", (chatroom_uuid) => {
     socket.join(chatroom_uuid);
   });
 
-  socket.on("send-message", (message: any /* message */) => {
+  socket.on("send-message", (message) => {
     chat.to(message.chatroom_uuid).emit("receive-message", message);
   });
 });
