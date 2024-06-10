@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCr4dbfgAGxAZVB0G0vNPn_cZ9YYP0UAHg",
-  authDomain: "sde-coding-wizards-chat-app.firebaseapp.com",
-  projectId: "sde-coding-wizards-chat-app",
-  storageBucket: "sde-coding-wizards-chat-app.appspot.com",
-  messagingSenderId: "960771910390",
-  appId: "1:960771910390:web:7a7a4b5b9cf24afdf79ad7",
-  measurementId: "G-PS1L6SZDZH"
+  apiKey: process.env.FIREBASE_APIKEY || "",
+  authDomain: process.env.FIREBASE_AUTHDOMAIN || "",
+  projectId: process.env.FIREBASE_PROJECTID || "",
+  storageBucket: process.env.FIREBASE_STORAGEBUCKET || "",
+  messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID || "",
+  appId: process.env.FIREBASE_APPID || "",
+  measurementId: process.env.FIREBASE_MEASUREMENTID || ""
 };
 
 const app = initializeApp(firebaseConfig);
