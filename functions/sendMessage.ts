@@ -1,5 +1,7 @@
 "use server"
 
+import { pool } from "@/lib/server/database";
+
 export async function sendMessage(
   uuid: string,
   message: message,

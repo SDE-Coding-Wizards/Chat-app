@@ -1,5 +1,7 @@
 "use server";
 
+import { pool } from "@/lib/server/database";
+
 export async function createUser(user: user): Promise<user> {
   const conn = await pool.getConnection();
 

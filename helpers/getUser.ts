@@ -2,6 +2,7 @@
 
 import { decodeJwt } from "jose";
 import { cookies } from "next/headers";
+import { pool } from "@/lib/server/database";
 
 export async function getUser(): Promise<user | null> {
   const token = cookies().get("token")?.value;
