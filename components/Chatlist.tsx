@@ -6,6 +6,7 @@ import { getChatrooms, getUsers } from "@/functions";
 import { createChat, getUser } from "@/helpers";
 import { X } from "lucide-react";
 import Select from "react-select";
+import { useWebsocket } from "@/hooks";
 
 interface ChatlistProps {
   initialChatrooms?: chatroom[];
@@ -17,6 +18,14 @@ export default function Chatlist({ initialChatrooms = [] }: ChatlistProps) {
   const [user, setUser] = useState<user | null>(null);
   const [allUsers, setAllUsers] = useState<user[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<any>([]);
+  const [socket] = useWebsocket("/", {
+    room: user?.uuid || "",
+    events: { "new-message": testFunction },
+  });
+
+  function testFunction(data: any) {
+    console.log(data);
+  }
 
   const createGroupRef = useRef<HTMLDialogElement>(null);
 

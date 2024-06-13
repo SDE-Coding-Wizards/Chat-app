@@ -12,6 +12,14 @@ const io = new Server(httpServer, {
   },
 });
 
+io.on("connection", (socket) => {
+  socket.on("join-room", socket.join);
+
+  socket.on("chatlist-update", (chatlist, user_uuid) => {
+    io.to(user_uuid).emit("chatlist-update", chatlist);
+  });
+});
+
 const chat = io.of("/chat");
 
 chat.on("connection", async (socket) => {
